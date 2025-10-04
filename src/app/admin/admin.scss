@@ -1,0 +1,225 @@
+/* 🌈 พื้นหลัง */
+body, html {
+  margin: 0;
+  font-family: 'Prompt', sans-serif;
+  background: linear-gradient(135deg, #6a63d2, #7169e2);
+}
+
+/* 🔹 Navbar */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f9f9ff;
+  padding: 12px 60px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  color: #4e4ec8;
+  font-size: 1.3rem;
+}
+
+.nav-links {
+  display: flex;
+  gap: 1rem;
+}
+
+.nav-btn,
+.nav-btn-outline {
+  border-radius: 20px;
+  padding: 6px 16px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: 0.25s;
+}
+
+.nav-btn {
+  background: #6a63d2;
+  color: white;
+  border: none;
+}
+
+.nav-btn:hover {
+  opacity: 0.9;
+}
+
+.nav-btn-outline {
+  background: none;
+  border: 1px solid #6a63d2;
+  color: #6a63d2;
+}
+
+.nav-btn-outline:hover {
+  background: #6a63d2;
+  color: white;
+}
+
+/* 🔹 กล่องหลัก */
+.container {
+  display: flex;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+.dashboard-box {
+  background: white;
+  width: 85%;
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-title {
+  text-align: center;
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+/* 🔹 เมนูบน */
+.menu-row {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.menu-btn {
+  background: #57a0ef;
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: 0.3s;
+}
+
+.menu-btn:hover {
+  transform: translateY(-2px);
+}
+
+/* 🔹 แถวสรุป */
+.summary-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 35px;
+}
+
+.summary-card {
+  flex: 1 1 200px;
+  border-radius: 10px;
+  color: white;
+  padding: 20px;
+  text-align: center;
+}
+
+.summary-card p {
+  font-size: 0.95rem;
+  margin-bottom: 6px;
+}
+
+.summary-card h3 {
+  font-size: 1.6rem;
+  font-weight: bold;
+}
+
+.blue {
+  background: #3b82f6;
+}
+.green {
+  background: #22c55e;
+}
+.red {
+  background: #ef4444;
+}
+.orange {
+  background: #f59e0b;
+}
+
+/* 🔹 รายการเกมขายดี */
+.sub-title {
+  font-size: 1.2rem;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.rank-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.rank-item {
+  background: #fdfdfd;
+  border-radius: 12px;
+  padding: 12px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.rank-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.rank-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #6a63d2, #8a78e2);
+}
+
+.rank-text h4 {
+  margin: 0;
+  font-size: 1rem;
+  color: #222;
+}
+
+.rank-text p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.rank-btn {
+  background: #f59e0b;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.rank-btn:hover {
+  transform: scale(1.05);
+}
+
+/* 🔹 Responsive */
+@media (max-width: 768px) {
+  .menu-row {
+    flex-direction: column;
+  }
+
+  .summary-row {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .dashboard-box {
+    width: 95%;
+  }
+}

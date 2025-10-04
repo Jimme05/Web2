@@ -1,0 +1,66 @@
+<!-- 🔹 Navbar -->
+<nav class="navbar">
+    <div class="logo">
+        <span>🎮</span>
+        GameShop
+    </div>
+    <div class="nav-links">
+        <button class="nav-btn">แดชบอร์ด</button>
+        <button class="nav-btn-outline">จัดการเกม</button>
+        <button class="nav-btn-outline">จัดการผู้ใช้</button>
+        <button class="nav-btn-outline">ออกจากระบบ</button>
+    </div>
+</nav>
+
+<!-- 🔹 Dashboard Content -->
+<div class="container">
+    <div class="dashboard-box">
+        <h2 class="dashboard-title">⚙️ แดชบอร์ดผู้ดูแล</h2>
+
+        <!-- 🔹 ปุ่มเมนูบน -->
+        <div class="menu-row">
+            <button class="menu-btn">🎮 จัดการเกม</button>
+            <button class="menu-btn">👥 จัดการผู้ใช้</button>
+            <button class="menu-btn">💳 จัดการโค้ดส่วนลด</button>
+            <button class="menu-btn">📈 อันดับขาย</button>
+        </div>
+
+        <!-- 🔹 แถวสรุปข้อมูล -->
+        <div class="summary-row">
+            <div class="summary-card blue">
+                <p>จำนวนเกมทั้งหมด</p>
+
+            </div>
+
+            <div class="summary-card green">
+                <p>จำนวนผู้ใช้</p>
+
+            </div>
+
+            <div class="summary-card red">
+                <p>ยอดขายรวม</p>
+
+            </div>
+
+            <div class="summary-card orange">
+                <p>โค้ดส่วนลดใช้งานได้</p>
+
+            </div>
+        </div>
+
+        <!-- 🔹 อันดับเกมขายดี -->
+        <h3 class="sub-title">📊 อันดับเกมขายดี</h3>
+        <div class="rank-list">
+            <div class="rank-item" *ngFor="let g of bestSellers">
+                <div class="rank-info">
+                    <div class="rank-icon"></div>
+                    <div class="rank-text">
+
+                        <p>ขายได้ เกม</p>
+                    </div>
+                </div>
+                <button class="rank-btn">อันดับ {{ g.rank }}</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,227 @@
+/* 🌈 พื้นหลัง */
+body, html {
+  margin: 0;
+  font-family: 'Prompt', sans-serif;
+  background: linear-gradient(135deg, #6a63d2, #7169e2);
+  min-height: 100vh;
+}
+
+/* 🎮 Navbar */
+.navbar {
+  background: #f9f9ff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 60px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  color: #4e4ec8;
+  font-size: 1.3rem;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.nav-btn,
+.nav-btn-outline {
+  border-radius: 20px;
+  padding: 6px 16px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: 0.25s;
+}
+
+.nav-btn {
+  background: #6a63d2;
+  color: white;
+  border: none;
+}
+
+.nav-btn.active {
+  background: #5b54c5;
+}
+
+.nav-btn-outline {
+  background: none;
+  border: 1px solid #6a63d2;
+  color: #6a63d2;
+}
+
+.nav-btn-outline:hover {
+  background: #6a63d2;
+  color: #fff;
+}
+
+.balance {
+  background: linear-gradient(135deg, #8b80f9, #7169e2);
+  color: white;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.95rem;
+}
+
+.logout-btn {
+  border: 1px solid #6a63d2;
+  color: #6a63d2;
+  background: none;
+  border-radius: 20px;
+  padding: 6px 16px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.logout-btn:hover {
+  background: #6a63d2;
+  color: white;
+}
+
+/* 🛒 กล่องร้านค้า */
+.container {
+  display: flex;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+.store-box {
+  background: white;
+  width: 85%;
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.store-title {
+  text-align: center;
+  font-size: 1.8rem;
+  margin-bottom: 25px;
+  color: #333;
+}
+
+/* 🔍 ช่องค้นหา */
+.search-row {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 30px;
+}
+
+.search-row input,
+.search-row select {
+  padding: 10px 16px;
+  border-radius: 20px;
+  border: 1px solid #ccc;
+  outline: none;
+  width: 250px;
+}
+
+.btn-search {
+  background: #6a63d2;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: 0.25s;
+}
+.btn-search:hover {
+  background: #554dc9;
+}
+
+/* 🎴 การ์ดเกม */
+.games-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.game-card {
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: 0.3s;
+}
+.game-card:hover {
+  transform: translateY(-5px);
+}
+
+.game-banner {
+  background: linear-gradient(135deg, #6a63d2, #7a6ef2);
+  height: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+}
+
+.game-info {
+  padding: 16px;
+}
+
+.game-info h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #333;
+}
+
+.genre {
+  color: #666;
+  font-size: 0.9rem;
+  margin-bottom: 8px;
+}
+
+.price {
+  color: #e53935;
+  font-weight: 600;
+  font-size: 1.2rem;
+  margin-bottom: 8px;
+}
+
+.rank {
+  background: #f59e0b;
+  color: white;
+  display: inline-block;
+  border-radius: 10px;
+  padding: 4px 10px;
+  font-size: 0.85rem;
+  margin-bottom: 10px;
+}
+
+.btn-cart {
+  width: 100%;
+  background: #6a63d2;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 8px 0;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.btn-cart:hover {
+  background: #5a55c9;
+}
+
+/* 📱 Responsive */
+@media (max-width: 768px) {
+  .search-row {
+    flex-direction: column;
+    align-items: center;
+  }
+  .search-row input,
+  .search-row select {
+    width: 90%;
+  }
+  .store-box {
+    width: 95%;
+  }
+}

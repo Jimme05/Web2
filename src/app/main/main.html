@@ -1,0 +1,241 @@
+<!-- main.html -->
+
+<!-- 🎮 Navbar -->
+<nav class="navbar">
+  <div class="logo">
+    <span>🎮</span>
+    <span class="logo-text">GameShop</span>
+  </div>
+  <div class="nav-links">
+    <button class="nav-btn">
+      <span class="btn-icon">🏪</span>
+      ร้านค้า
+    </button>
+    
+    <ng-container *ngIf="!isLoggedIn">
+      <button class="nav-btn-outline" (click)="openModal('login')">
+        <span class="btn-icon">🔐</span>
+        เข้าสู่ระบบ
+      </button>
+      <button class="nav-btn-outline" (click)="openModal('register')">
+        <span class="btn-icon">✨</span>
+        สมัครสมาชิก
+      </button>
+    </ng-container>
+    
+    <button *ngIf="isLoggedIn" class="nav-btn-outline logout-btn" (click)="logout()">
+      <span class="btn-icon">👋</span>
+      ออกจากระบบ
+    </button>
+  </div>
+</nav>
+
+<!-- 🏠 Hero Section -->
+<div class="container">
+  <div class="hero-box">
+    <div class="hero-icon-wrapper">
+      <div class="hero-icon">🎮</div>
+      <div class="hero-glow"></div>
+    </div>
+    <h1 class="hero-title">
+      ยินดีต้อนรับสู่ <span class="gradient-text">GameShop</span>
+    </h1>
+    <p class="hero-text">
+      ร้านค้าเกมออนไลน์สุดครบครัน รวมทุกแนวเกมยอดฮิตในที่เดียว<br>
+      <span class="hero-subtext">🎯 ราคาดีที่สุด | 🚀 จัดส่งทันที | 🎁 โปรโมชั่นพิเศษ</span>
+    </p>
+    <button class="btn-primary" (click)="openModal('register')">
+      <span class="btn-shine"></span>
+      <span class="btn-text">เริ่มต้นเลยตอนนี้</span>
+      <span class="btn-arrow">→</span>
+    </button>
+  </div>
+</div>
+
+<!-- 💬 Login Modal -->
+<div class="modal-overlay" [class.active]="isLoginModalOpen" (click)="closeModalOnOverlay($event, 'login')">
+  <div class="auth-card" (click)="$event.stopPropagation()">
+    <button class="close-btn" (click)="closeModal('login')">&times;</button>
+    
+    <div class="auth-header">
+      <div class="auth-icon">🔐</div>
+      <h2>เข้าสู่ระบบ</h2>
+      <p class="auth-subtitle">ยินดีต้อนรับกลับมา!</p>
+    </div>
+    
+    <div class="error-message" *ngIf="loginError">
+      <span class="error-icon">⚠️</span>
+      {{ loginError }}
+    </div>
+
+    <form (ngSubmit)="handleLogin()">
+      <div class="form-group">
+        <label for="loginEmail">
+          <span class="label-icon">📧</span>
+          อีเมล
+        </label>
+        <input 
+          type="email" 
+          id="loginEmail" 
+          [(ngModel)]="loginEmail"
+          name="loginEmail"
+          required 
+          placeholder="example@email.com"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="loginPassword">
+          <span class="label-icon">🔒</span>
+          รหัสผ่าน
+        </label>
+        <input 
+          type="password" 
+          id="loginPassword" 
+          [(ngModel)]="loginPassword"
+          name="loginPassword"
+          required 
+          placeholder="••••••••"
+        />
+      </div>
+
+      <button type="submit" class="btn-submit">
+        <span class="btn-shine"></span>
+        เข้าสู่ระบบ
+      </button>
+    </form>
+
+    <div class="divider">
+      <span>หรือ</span>
+    </div>
+
+    <div class="auth-switch">
+      ยังไม่มีบัญชี? 
+      <a href="#" (click)="switchModal('login', 'register'); $event.preventDefault()">
+        สมัครสมาชิกเลย
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- 📝 Register Modal -->
+<div class="modal-overlay" [class.active]="isRegisterModalOpen" (click)="closeModalOnOverlay($event, 'register')">
+  <div class="auth-card register-card" (click)="$event.stopPropagation()">
+    <button class="close-btn" (click)="closeModal('register')">&times;</button>
+    
+    <div class="auth-header">
+      <div class="auth-icon">✨</div>
+      <h2>สมัครสมาชิก</h2>
+      <p class="auth-subtitle">เริ่มต้นการผจญภัยของคุณ</p>
+    </div>
+    
+    <div class="profile-preview" [innerHTML]="profilePreview"></div>
+    
+    <div class="error-message" *ngIf="registerError">
+      <span class="error-icon">⚠️</span>
+      {{ registerError }}
+    </div>
+    
+    <div class="success-message" *ngIf="registerSuccess">
+      <span class="success-icon">✅</span>
+      {{ registerSuccess }}
+    </div>
+
+    <form (ngSubmit)="handleRegister()">
+      <div class="form-group">
+        <label for="registerUsername">
+          <span class="label-icon">👤</span>
+          ชื่อผู้ใช้
+        </label>
+        <input 
+          type="text" 
+          id="registerUsername" 
+          [(ngModel)]="registerUsername"
+          name="registerUsername"
+          required 
+          placeholder="ชื่อเล่นของคุณ"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="registerEmail">
+          <span class="label-icon">📧</span>
+          อีเมล
+        </label>
+        <input 
+          type="email" 
+          id="registerEmail" 
+          [(ngModel)]="registerEmail"
+          name="registerEmail"
+          required 
+          placeholder="example@email.com"
+        />
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="registerPassword">
+            <span class="label-icon">🔒</span>
+            รหัสผ่าน
+          </label>
+          <input 
+            type="password" 
+            id="registerPassword" 
+            [(ngModel)]="registerPassword"
+            name="registerPassword"
+            required 
+            minlength="6"
+            placeholder="อย่างน้อย 6 ตัว"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="registerConfirmPassword">
+            <span class="label-icon">🔐</span>
+            ยืนยันรหัส
+          </label>
+          <input 
+            type="password" 
+            id="registerConfirmPassword" 
+            [(ngModel)]="registerConfirmPassword"
+            name="registerConfirmPassword"
+            required 
+            placeholder="ยืนยันอีกครั้ง"
+          />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="registerImage">
+          <span class="label-icon">🖼️</span>
+          รูปโปรไฟล์ (URL)
+          <span class="optional-badge">ไม่บังคับ</span>
+        </label>
+        <input 
+          type="url" 
+          id="registerImage" 
+          [(ngModel)]="registerImage"
+          name="registerImage"
+          (ngModelChange)="onImageChange()"
+          placeholder="https://example.com/avatar.jpg"
+        />
+      </div>
+
+      <button type="submit" class="btn-submit">
+        <span class="btn-shine"></span>
+        สมัครสมาชิก
+      </button>
+    </form>
+
+    <div class="divider">
+      <span>หรือ</span>
+    </div>
+
+    <div class="auth-switch">
+      มีบัญชีอยู่แล้ว? 
+      <a href="#" (click)="switchModal('register', 'login'); $event.preventDefault()">
+        เข้าสู่ระบบ
+      </a>
+    </div>
+  </div>
+</div>
