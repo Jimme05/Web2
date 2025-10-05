@@ -11,6 +11,7 @@
   <div class="edit-card">
     <h2 class="title">📝 แก้ไขข้อมูลส่วนตัว</h2>
 
+    <!-- แสดง error/success -->
     <div class="error" *ngIf="errorMessage">
       ⚠️ {{ errorMessage }}
     </div>
@@ -19,37 +20,85 @@
     </div>
 
     <form (ngSubmit)="saveProfile()" enctype="multipart/form-data">
+      <!-- 👤 ชื่อผู้ใช้ -->
       <div class="form-group">
-        <label>👤 ชื่อผู้ใช้</label>
-        <input type="text" [(ngModel)]="username" name="username" required />
+        <label for="username">👤 ชื่อผู้ใช้</label>
+        <input
+          id="username"
+          type="text"
+          [(ngModel)]="name"
+          name="name"
+          required
+        />
       </div>
 
+      <!-- 📧 อีเมล (read-only) -->
       <div class="form-group">
-        <label>📧 อีเมล</label>
-        <input type="email" [(ngModel)]="email" name="email" required />
+        <label for="email">📧 อีเมล</label>
+        <input
+          id="email"
+          type="email"
+          [(ngModel)]="email"
+          name="email"
+          readonly
+          class="readonly"
+        />
+        <small class="hint">
+          อีเมลใช้สำหรับอ้างอิงในระบบ ไม่สามารถเปลี่ยนได้
+        </small>
       </div>
 
-      <!-- 🖼️ เปลี่ยนจาก URL เป็น File Upload -->
+      <!-- 🖼️ อัปโหลดรูปโปรไฟล์ -->
       <div class="form-group">
-        <label>🖼️ อัปโหลดรูปโปรไฟล์</label>
-        <input type="file" accept="image/*" (change)="onFileSelected($event)" />
+        <label for="profileFile">🖼️ อัปโหลดรูปโปรไฟล์</label>
+        <input
+          id="profileFile"
+          type="file"
+          accept="image/*"
+          (change)="onFileSelected($event)"
+        />
 
-        <!-- Preview -->
+        <!-- Preview ใหม่ -->
         <div class="preview-box" *ngIf="previewImage">
           <img [src]="previewImage" alt="Profile Preview" />
+          <div class="preview-caption">รูปตัวอย่าง (ยังไม่บันทึก)</div>
+        </div>
+
+        <!-- ไม่มีรูปเลย -->
+        <div
+          class="preview-box placeholder"
+          *ngIf="!previewImage "
+        >
+          <div class="avatar-placeholder">👤</div>
+          <div class="preview-caption">ยังไม่มีรูปโปรไฟล์</div>
         </div>
       </div>
 
+      <!-- 🔒 รหัสผ่าน -->
       <div class="form-group">
-        <label>🔒 รหัสผ่านใหม่ (ถ้าต้องการเปลี่ยน)</label>
-        <input type="password" [(ngModel)]="password" name="password" placeholder="เว้นว่างถ้าไม่เปลี่ยน" />
+        <label for="password">🔒 รหัสผ่านใหม่ (ถ้าต้องการเปลี่ยน)</label>
+        <input
+          id="password"
+          type="password"
+          [(ngModel)]="password"
+          name="password"
+          placeholder="เว้นว่างถ้าไม่เปลี่ยน"
+          autocomplete="new-password"
+        />
       </div>
 
       <div class="form-group">
-        <label>🔐 ยืนยันรหัสผ่าน</label>
-        <input type="password" [(ngModel)]="confirmPassword" name="confirmPassword" />
+        <label for="confirmPassword">🔐 ยืนยันรหัสผ่าน</label>
+        <input
+          id="confirmPassword"
+          type="password"
+          [(ngModel)]="confirmPassword"
+          name="confirmPassword"
+          autocomplete="new-password"
+        />
       </div>
 
+      <!-- ปุ่ม -->
       <div class="btn-group">
         <button type="button" class="btn-cancel" (click)="cancel()">ยกเลิก</button>
         <button type="submit" class="btn-save">💾 บันทึก</button>

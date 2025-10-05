@@ -102,34 +102,31 @@ onFileSelected(event: Event): void {
   // 📝 REGISTER
   // =====================
   async onRegister() {
-    this.registerError = '';
-    this.registerSuccess = '';
-
-    if (!this.registerUsername || !this.registerEmail || !this.registerPassword) {
-      this.registerError = 'กรอกข้อมูลให้ครบถ้วน';
-      return;
-    }
-    if (this.registerPassword !== this.registerConfirmPassword) {
-      this.registerError = 'รหัสผ่านไม่ตรงกัน';
-      return;
-    }
-
-    this.isRegistering = true;
-    try {
-      await this.api.register(this.registerUsername, this.registerEmail, this.registerPassword, this.registerImage);
-      this.registerSuccess = 'สมัครสมาชิกสำเร็จ! กรุณาเข้าสู่ระบบ';
-      this.registerUsername = '';
-      this.registerEmail = '';
-      this.registerPassword = '';
-      this.registerConfirmPassword = '';
-      this.registerImage = '';
-      this.activeTab = 'login';
-    } catch (err: any) {
-      this.registerError = err.message || 'สมัครสมาชิกไม่สำเร็จ';
-    } finally {
-      this.isRegistering = false;
-    }
+  if (!this.registerUsername || !this.registerEmail || !this.registerPassword) {
+    this.registerError = 'กรอกข้อมูลให้ครบถ้วน';
+    return;
   }
+
+  const formData = new FormData();
+  formData.append('name', this.registerUsername);
+  formData.append('email', this.registerEmail);
+  formData.append('password', this.registerPassword);
+  if (this.selectedFile) {
+    formData.append('profileImage', this.selectedFile, this.selectedFile.name);
+  }
+
+  try {
+    const res = await fetch('https://8f963cb2b5ea.ngrok-free.app/api/Auth/register', {
+      method: 'POST',
+      body: formData
+    });
+    if (!res.ok) throw new Error(await res.text());
+    this.registerSuccess = 'สมัครสมาชิกสำเร็จ!';
+  } catch (err: any) {
+    this.registerError = err.message;
+  }
+}
+
 
   // 🚪 LOGOUT
   logout() {

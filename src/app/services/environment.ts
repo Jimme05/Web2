@@ -1,4 +1,5 @@
 export const environment = {
   production: false,
-  API_URL: 'https://wepapi-59g1.onrender.com'
+  apiOrigin: 'https://8f963cb2b5ea.ngrok-free.app',
+
 };
