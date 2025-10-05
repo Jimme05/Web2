@@ -526,3 +526,37 @@ $bg-light: #f8f9fa;
   top: 16px;
   right: 16px;
 }
+
+.btn-topup.btn-edit {
+  background: linear-gradient(135deg, #8b80f9, #6a63d2);
+  color: #fff;
+  border: none;
+  padding: 0.7rem 1.5rem;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(106, 99, 210, 0.25);
+
+  // hover effect
+  &:hover {
+    background: linear-gradient(135deg, #9c91ff, #7a73e6);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(106, 99, 210, 0.35);
+  }
+
+  // กดปุ่ม
+  &:active {
+    transform: scale(0.97);
+    box-shadow: 0 2px 6px rgba(106, 99, 210, 0.25);
+  }
+
+  // ไอคอน
+  .btn-icon {
+    font-size: 1.2rem;
+  }
+}

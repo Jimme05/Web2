@@ -235,4 +235,8 @@ export class Profile {
       .filter(t => t.type === 'purchase')
       .reduce((sum, t) => sum + t.amount, 0);
   }
+
+   async goToEditProfile() {
+    await this.router.navigate(['/edit-profile']);
+  }
 }

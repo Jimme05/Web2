@@ -3,10 +3,12 @@ import { Main } from './main/main';
 import { Admin } from './admin/admin';
 import { Home } from './home/home';
 import { Profile } from './profile/profile';
+import { EditProfile } from './edit-profile/edit-profile';
 
 export const routes: Routes = [
     { path: '', component: Main },
     { path: 'admin', component: Admin },
     { path: 'home', component: Home },
-    { path: 'profile', component : Profile}
+    { path: 'profile', component : Profile},
+    { path: 'edit-profile', component: EditProfile },
 ];

@@ -1,0 +1,53 @@
+<nav class="navbar">
+  <div class="logo">
+    <span>🎮</span> GameShop
+  </div>
+  <div class="nav-links">
+    <button class="nav-btn-outline" (click)="cancel()">⬅ กลับไปโปรไฟล์</button>
+  </div>
+</nav>
+
+<div class="edit-container">
+  <div class="edit-card">
+    <h2 class="title">📝 แก้ไขข้อมูลส่วนตัว</h2>
+
+    <div class="error" *ngIf="errorMessage">
+      ⚠️ {{ errorMessage }}
+    </div>
+    <div class="success" *ngIf="successMessage">
+      ✅ {{ successMessage }}
+    </div>
+
+    <form (ngSubmit)="saveProfile()">
+      <div class="form-group">
+        <label>👤 ชื่อผู้ใช้</label>
+        <input type="text" [(ngModel)]="username" name="username" required />
+      </div>
+
+      <div class="form-group">
+        <label>📧 อีเมล</label>
+        <input type="email" [(ngModel)]="email" name="email" required />
+      </div>
+
+      <div class="form-group">
+        <label>🖼️ รูปโปรไฟล์ (URL)</label>
+        <input type="url" [(ngModel)]="profileImage" name="profileImage" placeholder="https://example.com/avatar.jpg" />
+      </div>
+
+      <div class="form-group">
+        <label>🔒 รหัสผ่านใหม่ (ถ้าต้องการเปลี่ยน)</label>
+        <input type="password" [(ngModel)]="password" name="password" placeholder="เว้นว่างถ้าไม่เปลี่ยน" />
+      </div>
+
+      <div class="form-group">
+        <label>🔐 ยืนยันรหัสผ่าน</label>
+        <input type="password" [(ngModel)]="confirmPassword" name="confirmPassword" />
+      </div>
+
+      <div class="btn-group">
+        <button type="button" class="btn-cancel" (click)="cancel()">ยกเลิก</button>
+        <button type="submit" class="btn-save">💾 บันทึก</button>
+      </div>
+    </form>
+  </div>
+</div>
