@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { ApiService } from '../services/service';
-
 
 @Component({
   selector: 'app-auth-page',
@@ -32,9 +32,9 @@ export class Main {
   isRegistering = false;
 
   // current user
-  user: { username?: string; email?: string; image?: string } | null = null;
+  user: { username?: string; email?: string; role?: string; image?: string } | null = null;
 
-  constructor(private api: ApiService) {}
+  constructor(private api: ApiService, private router: Router) {}
 
   switchTab(tab: 'login' | 'register') {
     this.activeTab = tab;
@@ -43,65 +43,75 @@ export class Main {
     this.registerSuccess = '';
   }
 
-  // LOGIN
- // LOGIN
-async onLogin() {
-  this.loginError = '';
-  if (!this.loginEmail || !this.loginPassword) {
-    this.loginError = 'กรอกอีเมลและรหัสผ่าน';
-    return;
-  }
-  this.isLoggingIn = true;
-  try {
-    const res = await this.api.login(this.loginEmail, this.loginPassword);
-    this.user = res?.user ?? { email: this.loginEmail };
-    this.loginEmail = '';
-    this.loginPassword = '';
-    alert(`เข้าสู่ระบบสำเร็จ${this.user?.username ? ' คุณ ' + this.user.username : ''}!`);
-  } catch (err: any) {
-    this.loginError = err.message || 'เข้าสู่ระบบล้มเหลว';
-  } finally {
-    this.isLoggingIn = false;
-  }
-}
+  // =====================
+  // 🔐 LOGIN
+  // =====================
+  async onLogin() {
+    this.loginError = '';
+    if (!this.loginEmail || !this.loginPassword) {
+      this.loginError = 'กรอกอีเมลและรหัสผ่าน';
+      return;
+    }
+    this.isLoggingIn = true;
+    try {
+      const res = await this.api.login(this.loginEmail, this.loginPassword);
+      this.user = res?.user ?? { email: this.loginEmail };
 
+      this.loginEmail = '';
+      this.loginPassword = '';
 
-  // REGISTER
- // REGISTER
-async onRegister() {
-  this.registerError = '';
-  this.registerSuccess = '';
+      // ✅ เช็ค role แล้ว redirect
+      if (this.user?.role === 'Admin') {
+        this.router.navigate(['/admin']);
+      } else {
+        this.router.navigate(['/home']);
+      }
 
-  if (!this.registerUsername || !this.registerEmail || !this.registerPassword) {
-    this.registerError = 'กรอกข้อมูลให้ครบถ้วน';
-    return;
-  }
-  if (this.registerPassword !== this.registerConfirmPassword) {
-    this.registerError = 'รหัสผ่านไม่ตรงกัน';
-    return;
+      alert(`เข้าสู่ระบบสำเร็จ${this.user?.username ? ' คุณ ' + this.user.username : ''}!`);
+    } catch (err: any) {
+      this.loginError = err.message || 'เข้าสู่ระบบล้มเหลว';
+    } finally {
+      this.isLoggingIn = false;
+    }
   }
 
-  this.isRegistering = true;
-  try {
-    await this.api.register(this.registerUsername, this.registerEmail, this.registerPassword, this.registerImage);
-    this.registerSuccess = 'สมัครสมาชิกสำเร็จ! กรุณาเข้าสู่ระบบ';
-    this.registerUsername = '';
-    this.registerEmail = '';
-    this.registerPassword = '';
-    this.registerConfirmPassword = '';
-    this.registerImage = '';
-    this.activeTab = 'login';
-  } catch (err: any) {
-    this.registerError = err.message || 'สมัครสมาชิกไม่สำเร็จ';
-  } finally {
-    this.isRegistering = false;
+  // =====================
+  // 📝 REGISTER
+  // =====================
+  async onRegister() {
+    this.registerError = '';
+    this.registerSuccess = '';
+
+    if (!this.registerUsername || !this.registerEmail || !this.registerPassword) {
+      this.registerError = 'กรอกข้อมูลให้ครบถ้วน';
+      return;
+    }
+    if (this.registerPassword !== this.registerConfirmPassword) {
+      this.registerError = 'รหัสผ่านไม่ตรงกัน';
+      return;
+    }
+
+    this.isRegistering = true;
+    try {
+      await this.api.register(this.registerUsername, this.registerEmail, this.registerPassword, this.registerImage);
+      this.registerSuccess = 'สมัครสมาชิกสำเร็จ! กรุณาเข้าสู่ระบบ';
+      this.registerUsername = '';
+      this.registerEmail = '';
+      this.registerPassword = '';
+      this.registerConfirmPassword = '';
+      this.registerImage = '';
+      this.activeTab = 'login';
+    } catch (err: any) {
+      this.registerError = err.message || 'สมัครสมาชิกไม่สำเร็จ';
+    } finally {
+      this.isRegistering = false;
+    }
   }
-}
 
-
-  // LOGOUT
+  // 🚪 LOGOUT
   logout() {
     this.user = null;
+    this.router.navigate(['/']); // กลับไปหน้าแรก
   }
 
   // computed

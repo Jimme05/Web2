@@ -8,7 +8,7 @@ export class ApiService {
 
   // 🔐 Login
   async login(email: string, password: string): Promise<any> {
-    const res = await fetch(`${this.baseUrl}/auth/login`, {
+    const res = await fetch(`${this.baseUrl}/Auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password })
@@ -23,7 +23,7 @@ export class ApiService {
 
   // 📝 Register
   async register(username: string, email: string, password: string, profileImage?: string): Promise<any> {
-    const res = await fetch(`${this.baseUrl}/auth/register`, {
+    const res = await fetch(`${this.baseUrl}/Auth/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
