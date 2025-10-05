@@ -18,7 +18,7 @@ interface User {
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './edit-profile.html',
-  styleUrl: './edit-profile.scss'
+  styleUrls: ['./edit-profile.scss']
 })
 export class EditProfile {
   currentUser: User | null = null;
@@ -28,6 +28,9 @@ export class EditProfile {
   profileImage = '';
   password = '';
   confirmPassword = '';
+
+  previewImage: string | null = null;
+  selectedFile: File | null = null;
 
   errorMessage = '';
   successMessage = '';
@@ -41,16 +44,30 @@ export class EditProfile {
     //   this.username = this.currentUser.username;
     //   this.email = this.currentUser.email;
     //   this.profileImage = this.currentUser.profileImage;
+    //   this.previewImage = this.profileImage || null;
     // } else {
-    //   // ถ้าไม่มี session -> กลับหน้า login
     //   this.router.navigate(['/']);
     // }
   }
 
-  // ===========================
-  // 💾 บันทึกการเปลี่ยนแปลง
-  // ===========================
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      const file = input.files[0];
+      this.selectedFile = file;
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.previewImage = reader.result as string;
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
   saveProfile(): void {
+    this.errorMessage = '';
+    this.successMessage = '';
+
     if (!this.username || !this.email) {
       this.errorMessage = 'กรุณากรอกข้อมูลให้ครบถ้วน';
       return;
@@ -63,16 +80,15 @@ export class EditProfile {
 
     if (!this.currentUser) return;
 
-    // ✅ อัปเดต user ปัจจุบัน
+    // ✅ อัปเดตข้อมูล
     this.currentUser.username = this.username;
     this.currentUser.email = this.email;
-    this.currentUser.profileImage = this.profileImage;
+    this.currentUser.profileImage = this.previewImage || this.currentUser.profileImage;
     if (this.password) this.currentUser.password = this.password;
 
     // ✅ บันทึกลง localStorage
     localStorage.setItem('currentUser', JSON.stringify(this.currentUser));
 
-    // ✅ อัปเดตใน users ทั้งหมด
     const usersJson = localStorage.getItem('users');
     if (usersJson) {
       const users: User[] = JSON.parse(usersJson);

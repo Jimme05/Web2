@@ -38,6 +38,25 @@ export class Main {
    constructor(private api: ApiService, private router: Router) {}
    
 
+   previewImage: string | null = null;
+selectedFile: File | null = null;
+
+onFileSelected(event: Event): void {
+  const input = event.target as HTMLInputElement;
+  if (input.files && input.files.length > 0) {
+    const file = input.files[0];
+    this.selectedFile = file;
+
+    // แสดง preview
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.previewImage = reader.result as string;
+    };
+    reader.readAsDataURL(file);
+  }
+}
+
+
   switchTab(tab: 'login' | 'register') {
     this.activeTab = tab;
     this.showAuthCard = true;

@@ -132,53 +132,90 @@
     <span class="success-icon">✅</span> {{ registerSuccess }}
   </div>
 
-  <form (ngSubmit)="onRegister()">
-    <div class="form-group">
-      <label for="registerUsername"><span class="label-icon">👤</span>ชื่อผู้ใช้</label>
-      <input type="text" id="registerUsername" [(ngModel)]="registerUsername" name="registerUsername" required
-        placeholder="ชื่อเล่นของคุณ" />
-    </div>
-
-    <div class="form-group">
-      <label for="registerEmail"><span class="label-icon">📧</span>อีเมล</label>
-      <input type="email" id="registerEmail" [(ngModel)]="registerEmail" name="registerEmail" required
-        placeholder="example@email.com" />
-    </div>
-
-    <div class="form-row">
-      <div class="form-group">
-        <label for="registerPassword"><span class="label-icon">🔒</span>รหัสผ่าน</label>
-        <input type="password" id="registerPassword" [(ngModel)]="registerPassword" name="registerPassword" required
-          minlength="6" placeholder="อย่างน้อย 6 ตัว" />
-      </div>
-
-      <div class="form-group">
-        <label for="registerConfirmPassword"><span class="label-icon">🔐</span>ยืนยันรหัส</label>
-        <input type="password" id="registerConfirmPassword" [(ngModel)]="registerConfirmPassword"
-          name="registerConfirmPassword" required placeholder="ยืนยันอีกครั้ง" />
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label for="registerImage"><span class="label-icon">🖼️</span>รูปโปรไฟล์ (URL) <span
-          class="optional-badge">ไม่บังคับ</span></label>
-      <input type="url" id="registerImage" [(ngModel)]="registerImage" name="registerImage"
-        placeholder="https://example.com/avatar.jpg" />
-    </div>
-
-    <button type="submit" class="btn-submit" [disabled]="isRegistering">
-      <span class="btn-shine"></span>
-      {{ isRegistering ? 'กำลังสมัครสมาชิก...' : 'สมัครสมาชิก' }}
-    </button>
-  </form>
-
-  <div class="divider"><span>หรือ</span></div>
-
-  <div class="auth-switch">
-    มีบัญชีอยู่แล้ว?
-    <a href="#" (click)="switchTab('login'); $event.preventDefault()">เข้าสู่ระบบ</a>
+  <form (ngSubmit)="onRegister()" enctype="multipart/form-data">
+  <div class="form-group">
+    <label for="registerUsername"><span class="label-icon">👤</span>ชื่อผู้ใช้</label>
+    <input
+      type="text"
+      id="registerUsername"
+      [(ngModel)]="registerUsername"
+      name="registerUsername"
+      required
+      placeholder="ชื่อเล่นของคุณ"
+    />
   </div>
+
+  <div class="form-group">
+    <label for="registerEmail"><span class="label-icon">📧</span>อีเมล</label>
+    <input
+      type="email"
+      id="registerEmail"
+      [(ngModel)]="registerEmail"
+      name="registerEmail"
+      required
+      placeholder="example@email.com"
+    />
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label for="registerPassword"><span class="label-icon">🔒</span>รหัสผ่าน</label>
+      <input
+        type="password"
+        id="registerPassword"
+        [(ngModel)]="registerPassword"
+        name="registerPassword"
+        required
+        minlength="6"
+        placeholder="อย่างน้อย 6 ตัว"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="registerConfirmPassword"><span class="label-icon">🔐</span>ยืนยันรหัส</label>
+      <input
+        type="password"
+        id="registerConfirmPassword"
+        [(ngModel)]="registerConfirmPassword"
+        name="registerConfirmPassword"
+        required
+        placeholder="ยืนยันอีกครั้ง"
+      />
+    </div>
+  </div>
+
+  <!-- 🖼️ อัปโหลดรูปภาพ -->
+  <div class="form-group">
+    <label for="registerImage">
+      <span class="label-icon">🖼️</span>
+      อัปโหลดรูปโปรไฟล์ <span class="optional-badge">ไม่บังคับ</span>
+    </label>
+    <input
+      type="file"
+      id="registerImage"
+      (change)="onFileSelected($event)"
+      accept="image/*"
+    />
+
+    <!-- Preview -->
+    <div class="preview-box" *ngIf="previewImage">
+      <img [src]="previewImage" alt="Profile Preview" />
+    </div>
+  </div>
+
+  <button type="submit" class="btn-submit" [disabled]="isRegistering">
+    <span class="btn-shine"></span>
+    {{ isRegistering ? 'กำลังสมัครสมาชิก...' : 'สมัครสมาชิก' }}
+  </button>
+</form>
+
+<div class="divider"><span>หรือ</span></div>
+
+<div class="auth-switch">
+  มีบัญชีอยู่แล้ว?
+  <a href="#" (click)="switchTab('login'); $event.preventDefault()">เข้าสู่ระบบ</a>
 </div>
+
 
 <!-- 🎉 Logged-in state -->
 <div class="card welcome-card" *ngIf="isLoggedIn">
