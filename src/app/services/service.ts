@@ -1,43 +1,27 @@
 import { Injectable } from '@angular/core';
 
-@Injectable({
-  providedIn: 'root'
-})
+// src/app/services/service.ts
+@Injectable({ providedIn: 'root' })
 export class ApiService {
-  private baseUrl = 'https://wepapi-59g1.onrender.com/api'; // ✅ ชี้ไปที่ .NET backend ของคุณ
+  private baseUrl = 'https://wepapi-59g1.onrender.com/api';
 
-  // 🔐 Login
-  async login(email: string, password: string): Promise<any> {
+  async login(email: string, password: string) {
     const res = await fetch(`${this.baseUrl}/Auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password })
     });
-
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      throw new Error(err.message || 'Login failed');
-    }
-    return res.json();
+    if (!res.ok) throw new Error((await res.text()) || 'Login failed');
+    return res.json(); // <-- จะได้ { id, email, role }
   }
 
-  // 📝 Register
-  async register(username: string, email: string, password: string, profileImage?: string): Promise<any> {
+  async register(name: string, email: string, password: string, AvatarUrl?: string) {
     const res = await fetch(`${this.baseUrl}/Auth/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        username,
-        email,
-        password,
-        profileImage
-      })
+      body: JSON.stringify({ name, email, password, AvatarUrl })
     });
-
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      throw new Error(err.message || 'Register failed');
-    }
+    if (!res.ok) throw new Error((await res.text()) || 'Register failed');
     return res.json();
   }
 }

@@ -206,7 +206,7 @@
 
 <!-- 🎉 Logged-in state -->
 <div class="card welcome-card" *ngIf="isLoggedIn">
-  <h2>สวัสดี {{ user?.username || user?.email }}</h2>
+  <h2>สวัสดี {{  user?.email }}</h2>
   <p>พร้อมลุยเกมกันเลยไหม?</p>
   <button class="btn-primary" (click)="logout()">
     <span class="btn-shine"></span>

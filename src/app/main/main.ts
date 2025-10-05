@@ -32,9 +32,9 @@ export class Main {
   isRegistering = false;
 
   // current user
-  user: { username?: string; email?: string; role?: string; image?: string } | null = null;
+  user: { id?: number; email?: string; role?: 'Admin'|'User' } | null = null;
 
-  constructor(private api: ApiService, private router: Router) {}
+   constructor(private api: ApiService, private router: Router) {}
 
   switchTab(tab: 'login' | 'register') {
     this.activeTab = tab;
@@ -55,21 +55,22 @@ export class Main {
     this.isLoggingIn = true;
     try {
       const res = await this.api.login(this.loginEmail, this.loginPassword);
-      this.user = res?.user ?? { email: this.loginEmail };
+      // res = { id, email, role }
+      this.user = res;
+      localStorage.setItem('currentUser', JSON.stringify(res)); // เก็บ session ฝั่ง client
 
+      // เคลียร์ฟอร์ม
       this.loginEmail = '';
       this.loginPassword = '';
 
-      // ✅ เช็ค role แล้ว redirect
-      if (this.user?.role === 'Admin') {
+      // ✅ เช็ค role แล้วพาไปหน้าเหมาะสม
+      if (res.role === 'Admin') {
         this.router.navigate(['/admin']);
       } else {
         this.router.navigate(['/home']);
       }
-
-      alert(`เข้าสู่ระบบสำเร็จ${this.user?.username ? ' คุณ ' + this.user.username : ''}!`);
     } catch (err: any) {
-      this.loginError = err.message || 'เข้าสู่ระบบล้มเหลว';
+      this.loginError = err?.message || 'เข้าสู่ระบบล้มเหลว';
     } finally {
       this.isLoggingIn = false;
     }
