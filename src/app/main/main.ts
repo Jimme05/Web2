@@ -14,6 +14,7 @@ import { ApiService } from '../services/service';
 export class Main {
   // tab
   activeTab: 'login' | 'register' = 'login';
+  showAuthCard = false;
 
   // login
   loginEmail = '';
@@ -35,9 +36,11 @@ export class Main {
   user: { id?: number; email?: string; role?: 'Admin'|'User' } | null = null;
 
    constructor(private api: ApiService, private router: Router) {}
+   
 
   switchTab(tab: 'login' | 'register') {
     this.activeTab = tab;
+    this.showAuthCard = true;
     this.loginError = '';
     this.registerError = '';
     this.registerSuccess = '';
@@ -112,6 +115,7 @@ export class Main {
   // 🚪 LOGOUT
   logout() {
     this.user = null;
+    this.showAuthCard = false;
     this.router.navigate(['/']); // กลับไปหน้าแรก
   }
 

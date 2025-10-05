@@ -306,19 +306,15 @@ body {
 // 💬 MODAL
 // =====================
 .modal-overlay {
-  display: none;
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(8px);
+  display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
+  z-index: 999; // อยู่บนสุด
   animation: fadeIn 0.3s ease;
-
-  &.active {
-    display: flex;
-  }
 }
 
 @keyframes fadeIn {
@@ -335,13 +331,8 @@ body {
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
   animation: slideUp 0.4s ease;
   position: relative;
-  max-height: 90vh;
-  overflow-y: auto;
-
-  &.register-card {
-    max-width: 500px;
-  }
 }
+
 
 @keyframes slideUp {
   from {

@@ -1,0 +1,216 @@
+<nav class="navbar">
+    <div class="logo">
+        <span>🎮</span>
+        GameShop
+    </div>
+
+    <div class="nav-links">
+        <!-- ปุ่มร้านค้า -->
+        <button class="nav-btn" routerLink="/home" routerLinkActive="active">
+            ร้านค้า
+        </button>
+
+        <!-- ปุ่มคลังเกม -->
+        <button class="nav-btn-outline" routerLink="/library" routerLinkActive="active">
+            คลังเกม
+        </button>
+
+        <!-- ปุ่มโปรไฟล์ -->
+        <button class="nav-btn-outline" routerLink="/profile" routerLinkActive="active">
+            โปรไฟล์
+        </button>
+
+        <!-- ปุ่มตะกร้า -->
+        <button class="nav-btn-outline" routerLink="/cart" routerLinkActive="active">
+            ตะกร้า (0)
+        </button>
+
+        <!-- ยอดเงิน -->
+        <div class="balance">
+            💰 ฿{{ balance.toFixed(2) }}
+        </div>
+
+        <!-- ออกจากระบบ -->
+        <button class="logout-btn" (click)="logout()">ออกจากระบบ</button>
+    </div>
+</nav>
+
+<div class="profile-container">
+    <!-- 👤 Profile Header -->
+    <div class="profile-header">
+        <div class="profile-info">
+            <div class="profile-avatar">
+                <img *ngIf="currentUser?.profileImage" [src]="" alt="Profile">
+                <div *ngIf="!currentUser?.profileImage" class="avatar-placeholder">
+                    👤
+                </div>
+            </div>
+            <div class="profile-details">
+                <h1 class="profile-name">{{ currentUser?.username }}</h1>
+                <p class="profile-email">{{ currentUser?.email }}</p>
+                <div class="profile-meta">
+                    <span class="meta-item">
+                        <span class="meta-icon">🎮</span>
+                        {{ currentUser?.ownedGames?.length || 0 }} เกม
+                    </span>
+                    <span class="meta-item">
+                        <span class="meta-icon">📅</span>
+                        สมาชิกตั้งแต่ {{ formatDate(currentUser?.createdAt || '') }}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 💰 Wallet Section -->
+    <div class="wallet-section">
+        <div class="wallet-card">
+            <div class="wallet-header">
+                <h2 class="wallet-title">
+                    <span class="wallet-icon">💳</span>
+                    กระเป๋าเงิน
+                </h2>
+                <button class="btn-topup" (click)="openTopupModal()">
+                    <span class="btn-icon">💰</span>
+                    เติมเงิน
+                </button>
+            </div>
+
+            <div class="wallet-balance-card">
+                <p class="balance-label">ยอดเงินคงเหลือ</p>
+                <h3 class="balance-amount">฿{{ formatCurrency(walletBalance) }}</h3>
+
+                <div class="wallet-stats">
+                    <div class="stat-item">
+                        <span class="stat-icon">📥</span>
+                        <div class="stat-info">
+                            <p class="stat-label">เติมเงินทั้งหมด</p>
+                            <p class="stat-value">฿{{ formatCurrency(totalTopups) }}</p>
+                        </div>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-item">
+                        <span class="stat-icon">📤</span>
+                        <div class="stat-info">
+                            <p class="stat-label">ซื้อเกมทั้งหมด</p>
+                            <p class="stat-value">฿{{ formatCurrency(totalPurchases) }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 📜 Transaction History -->
+        <div class="transaction-section">
+            <div class="transaction-header">
+                <h3 class="transaction-title">
+                    <span class="title-icon">📋</span>
+                    ประวัติการทำรายการ
+                </h3>
+                <div class="transaction-filters">
+                    <button class="filter-btn" [class.active]="transactionFilter === 'all'" (click)="setFilter('all')">
+                        ทั้งหมด
+                    </button>
+                    <button class="filter-btn" [class.active]="transactionFilter === 'topup'"
+                        (click)="setFilter('topup')">
+                        💰 เติมเงิน
+                    </button>
+                    <button class="filter-btn" [class.active]="transactionFilter === 'purchase'"
+                        (click)="setFilter('purchase')">
+                        🎮 ซื้อเกม
+                    </button>
+                </div>
+            </div>
+
+            <!-- Transaction List -->
+            <div class="transaction-list" *ngIf="filteredTransactions.length > 0">
+                <div class="transaction-item" [ngClass]="getTransactionClass(transaction.type)"
+                    *ngFor="let transaction of filteredTransactions">
+                    <div class="transaction-icon">
+                        {{ getTransactionIcon(transaction.type) }}
+                    </div>
+                    <div class="transaction-details">
+                        <h4 class="transaction-desc">{{ transaction.description }}</h4>
+                        <p class="transaction-date">{{ formatDate(transaction.createdAt) }}</p>
+                        <div class="transaction-balance-info">
+                            <span class="balance-before">{{ formatCurrency(transaction.balanceBefore) }}</span>
+                            <span class="arrow">→</span>
+                            <span class="balance-after">{{ formatCurrency(transaction.balanceAfter) }}</span>
+                        </div>
+                    </div>
+                    <div class="transaction-amount" [class.topup]="transaction.type === 'topup'">
+                        <span class="amount-sign">{{ transaction.type === 'topup' ? '+' : '-' }}</span>
+                        ฿{{ formatCurrency(transaction.amount) }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Empty State -->
+            <div class="empty-state" *ngIf="filteredTransactions.length === 0">
+                <div class="empty-icon">📭</div>
+                <h3>ยังไม่มีรายการ</h3>
+                <p>เริ่มต้นด้วยการเติมเงินหรือซื้อเกมกันเถอะ!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 💰 Topup Modal -->
+<div class="modal-overlay" [class.active]="isTopupModalOpen" (click)="closeModalOnOverlay($event)">
+    <div class="topup-modal" (click)="$event.stopPropagation()">
+        <button class="close-btn" (click)="closeTopupModal()">&times;</button>
+
+        <div class="modal-header">
+            <div class="modal-icon">💰</div>
+            <h2>เติมเงินเข้ากระเป๋า</h2>
+            <p class="modal-subtitle">เลือกจำนวนเงินที่ต้องการเติม</p>
+        </div>
+
+        <div class="modal-body">
+            <!-- Current Balance -->
+            <div class="current-balance">
+                <span class="balance-label">ยอดเงินปัจจุบัน</span>
+                <span class="balance-value">฿{{ formatCurrency(walletBalance) }}</span>
+            </div>
+
+            <!-- Quick Amount Buttons -->
+            <div class="quick-amounts">
+                <button *ngFor="let amount of quickAmounts" class="amount-btn"
+                    [class.selected]="selectedAmount === amount" (click)="selectQuickAmount(amount)">
+                    <span class="amount-icon">💵</span>
+                    <span class="amount-text">฿{{ formatCurrency(amount) }}</span>
+                </button>
+            </div>
+
+            <!-- Custom Amount Input -->
+            <div class="custom-amount-section">
+                <label for="customAmount">หรือกรอกจำนวนเงินเอง</label>
+                <div class="custom-input-wrapper">
+                    <span class="currency-symbol">฿</span>
+                    <input type="number" id="customAmount" [(ngModel)]="customAmount"
+                        (ngModelChange)="onCustomAmountChange()" placeholder="0" min="1">
+                </div>
+            </div>
+
+            <!-- Summary -->
+            <div class="topup-summary" *ngIf="selectedAmount > 0">
+                <div class="summary-row">
+                    <span>จำนวนเงินที่เติม</span>
+                    <span class="summary-value">฿{{ formatCurrency(selectedAmount) }}</span>
+                </div>
+                <div class="summary-divider"></div>
+                <div class="summary-row total">
+                    <span>ยอดเงินหหลังเติม</span>
+                    <span class="summary-value highlight">฿{{ formatCurrency(walletBalance + selectedAmount) }}</span>
+                </div>
+            </div>
+
+            <!-- Confirm Button -->
+            <button class="btn-confirm" [disabled]="selectedAmount <= 0" (click)="confirmTopup()">
+                <span class="btn-shine"></span>
+                <span *ngIf="selectedAmount > 0">ยืนยันเติมเงิน ฿{{ formatCurrency(selectedAmount) }}</span>
+                <span *ngIf="selectedAmount <= 0">กรุณาเลือกจำนวนเงิน</span>
+            </button>
+        </div>
+    </div>
+</div>

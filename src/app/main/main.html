@@ -59,60 +59,65 @@
 <!-- ===================== -->
 <!-- 🔐 LOGIN CARD -->
 <!-- ===================== -->
-<div class="card auth-card" *ngIf="!isLoggedIn && activeTab==='login'">
-  <div class="auth-header">
-    <div class="auth-icon">🔐</div>
-    <h2>เข้าสู่ระบบ</h2>
-    <p class="auth-subtitle">ยินดีต้อนรับกลับมา!</p>
-  </div>
 
-  <div class="error-message" *ngIf="loginError">
-    <span class="error-icon">⚠️</span> {{ loginError }}
-  </div>
-
-  <form (ngSubmit)="onLogin()">
-    <div class="form-group">
-      <label for="loginEmail"><span class="label-icon">📧</span>อีเมล</label>
-      <input
-        type="email"
-        id="loginEmail"
-        [(ngModel)]="loginEmail"
-        name="loginEmail"
-        required
-        placeholder="example@email.com"
-      />
+<div class="modal-overlay" *ngIf="showAuthCard && !isLoggedIn">
+  <!-- LOGIN CARD -->
+  <div class="card auth-card" *ngIf="activeTab==='login'">
+    <button class="close-btn" (click)="showAuthCard = false">×</button>
+    <div class="auth-header">
+      <div class="auth-icon">🔐</div>
+      <h2>เข้าสู่ระบบ</h2>
+      <p class="auth-subtitle">ยินดีต้อนรับกลับมา!</p>
     </div>
 
-    <div class="form-group">
-      <label for="loginPassword"><span class="label-icon">🔒</span>รหัสผ่าน</label>
-      <input
-        type="password"
-        id="loginPassword"
-        [(ngModel)]="loginPassword"
-        name="loginPassword"
-        required
-        placeholder="••••••••"
-      />
+    <div class="error-message" *ngIf="loginError">
+      <span class="error-icon">⚠️</span> {{ loginError }}
     </div>
 
-    <button type="submit" class="btn-submit" [disabled]="isLoggingIn">
-      <span class="btn-shine"></span>
-      {{ isLoggingIn ? 'กำลังเข้าสู่ระบบ...' : 'เข้าสู่ระบบ' }}
-    </button>
-  </form>
+    <form (ngSubmit)="onLogin()">
+      <div class="form-group">
+        <label for="loginEmail"><span class="label-icon">📧</span>อีเมล</label>
+        <input
+          type="email"
+          id="loginEmail"
+          [(ngModel)]="loginEmail"
+          name="loginEmail"
+          required
+          placeholder="example@email.com"
+        />
+      </div>
 
-  <div class="divider"><span>หรือ</span></div>
+      <div class="form-group">
+        <label for="loginPassword"><span class="label-icon">🔒</span>รหัสผ่าน</label>
+        <input
+          type="password"
+          id="loginPassword"
+          [(ngModel)]="loginPassword"
+          name="loginPassword"
+          required
+          placeholder="••••••••"
+        />
+      </div>
 
-  <div class="auth-switch">
-    ยังไม่มีบัญชี?
-    <a href="#" (click)="switchTab('register'); $event.preventDefault()">สมัครสมาชิกเลย</a>
+      <button type="submit" class="btn-submit" [disabled]="isLoggingIn">
+        <span class="btn-shine"></span>
+        {{ isLoggingIn ? 'กำลังเข้าสู่ระบบ...' : 'เข้าสู่ระบบ' }}
+      </button>
+    </form>
+
+    <div class="divider"><span>หรือ</span></div>
+
+    <div class="auth-switch">
+      ยังไม่มีบัญชี?
+      <a href="#" (click)="switchTab('register'); $event.preventDefault()">สมัครสมาชิกเลย</a>
+    </div>
   </div>
-</div>
 
 <!-- ===================== -->
 <!-- 📝 REGISTER CARD -->
 <!-- ===================== -->
-<div class="card auth-card register-card" *ngIf="!isLoggedIn && activeTab==='register'">
+<div class="card auth-card register-card" *ngIf="showAuthCard && !isLoggedIn && activeTab==='register'">
+  <button class="close-btn" (click)="showAuthCard = false">×</button>
   <div class="auth-header">
     <div class="auth-icon">✨</div>
     <h2>สมัครสมาชิก</h2>
@@ -130,64 +135,35 @@
   <form (ngSubmit)="onRegister()">
     <div class="form-group">
       <label for="registerUsername"><span class="label-icon">👤</span>ชื่อผู้ใช้</label>
-      <input
-        type="text"
-        id="registerUsername"
-        [(ngModel)]="registerUsername"
-        name="registerUsername"
-        required
-        placeholder="ชื่อเล่นของคุณ"
-      />
+      <input type="text" id="registerUsername" [(ngModel)]="registerUsername" name="registerUsername" required
+        placeholder="ชื่อเล่นของคุณ" />
     </div>
 
     <div class="form-group">
       <label for="registerEmail"><span class="label-icon">📧</span>อีเมล</label>
-      <input
-        type="email"
-        id="registerEmail"
-        [(ngModel)]="registerEmail"
-        name="registerEmail"
-        required
-        placeholder="example@email.com"
-      />
+      <input type="email" id="registerEmail" [(ngModel)]="registerEmail" name="registerEmail" required
+        placeholder="example@email.com" />
     </div>
 
     <div class="form-row">
       <div class="form-group">
         <label for="registerPassword"><span class="label-icon">🔒</span>รหัสผ่าน</label>
-        <input
-          type="password"
-          id="registerPassword"
-          [(ngModel)]="registerPassword"
-          name="registerPassword"
-        required
-          minlength="6"
-          placeholder="อย่างน้อย 6 ตัว"
-        />
+        <input type="password" id="registerPassword" [(ngModel)]="registerPassword" name="registerPassword" required
+          minlength="6" placeholder="อย่างน้อย 6 ตัว" />
       </div>
 
       <div class="form-group">
         <label for="registerConfirmPassword"><span class="label-icon">🔐</span>ยืนยันรหัส</label>
-        <input
-          type="password"
-          id="registerConfirmPassword"
-          [(ngModel)]="registerConfirmPassword"
-          name="registerConfirmPassword"
-          required
-          placeholder="ยืนยันอีกครั้ง"
-        />
+        <input type="password" id="registerConfirmPassword" [(ngModel)]="registerConfirmPassword"
+          name="registerConfirmPassword" required placeholder="ยืนยันอีกครั้ง" />
       </div>
     </div>
 
     <div class="form-group">
-      <label for="registerImage"><span class="label-icon">🖼️</span>รูปโปรไฟล์ (URL) <span class="optional-badge">ไม่บังคับ</span></label>
-      <input
-        type="url"
-        id="registerImage"
-        [(ngModel)]="registerImage"
-        name="registerImage"
-        placeholder="https://example.com/avatar.jpg"
-      />
+      <label for="registerImage"><span class="label-icon">🖼️</span>รูปโปรไฟล์ (URL) <span
+          class="optional-badge">ไม่บังคับ</span></label>
+      <input type="url" id="registerImage" [(ngModel)]="registerImage" name="registerImage"
+        placeholder="https://example.com/avatar.jpg" />
     </div>
 
     <button type="submit" class="btn-submit" [disabled]="isRegistering">
@@ -206,7 +182,7 @@
 
 <!-- 🎉 Logged-in state -->
 <div class="card welcome-card" *ngIf="isLoggedIn">
-  <h2>สวัสดี {{  user?.email }}</h2>
+  <h2>สวัสดี {{ user?.email }}</h2>
   <p>พร้อมลุยเกมกันเลยไหม?</p>
   <button class="btn-primary" (click)="logout()">
     <span class="btn-shine"></span>

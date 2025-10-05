@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
+
 interface Game {
   id: number;
   title: string;
@@ -6,14 +8,18 @@ interface Game {
   price: number;
   rank: number;
 }
+
 @Component({
   selector: 'app-home',
+  standalone: true,
   imports: [],
   templateUrl: './home.html',
   styleUrl: './home.scss'
 })
 export class Home {
-balance = 5000;
+  balance = 5000;
+
+  constructor(private router: Router) {}
 
   games: Game[] = [
     { id: 1, title: 'Cyberpunk Adventure', genre: 'RPG', price: 1590, rank: 1 },
@@ -26,13 +32,30 @@ balance = 5000;
 
   searchTerm = '';
   selectedGenre = 'ทุกประเภท';
-
   genres = ['ทุกประเภท', 'RPG', 'Racing', 'Strategy', 'FPS', 'Adventure', 'Action'];
 
-  // ฟังก์ชันค้นหาเกม
-  
+  // =====================
+  // 👤 ไปหน้าโปรไฟล์
+  // =====================
+  async goToProfile() {
+    await this.router.navigate(['/profile']);
+  }
 
+  // =====================
+  // 🚪 ออกจากระบบ (รีเซ็ต session)
+  // =====================
   logout() {
+    // ✅ เคลียร์ข้อมูล session ทั้งหมด
+    localStorage.removeItem('currentUser');
+    localStorage.removeItem('cart');
+    localStorage.removeItem('transactions');
+    localStorage.removeItem('walletBalance');
+    // หรือจะล้างทั้งหมดเลยก็ได้
+    // localStorage.clear();
+
     alert('ออกจากระบบเรียบร้อย ✅');
+
+    // ✅ พากลับไปหน้าแรก (เช่น หน้า main/login)
+    this.router.navigate(['/']);
   }
 }
