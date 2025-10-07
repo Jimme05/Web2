@@ -2,6 +2,10 @@
   command = "npm run build -- --configuration=production"
   publish = "dist/angular-webpj/browser"
 
+[build.environment]
+  NETLIFY_USE_BUILD_BOT_RUNTIME = "false"
+  NODE_VERSION = "20"
+
 [[redirects]]
   from = "/*"
   to = "/index.html"
