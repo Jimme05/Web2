@@ -1,0 +1,108 @@
+.profile-container {
+  display: flex;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.profile-card {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 18px;
+  text-align: center;
+  width: 420px;
+  box-shadow: 0 6px 20px rgba(106, 99, 210, 0.15);
+  animation: fadeIn 0.4s ease;
+
+  .profile-img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #6a63d2;
+    margin-bottom: 1rem;
+  }
+
+  h2 {
+    color: #333;
+    margin-bottom: 0.25rem;
+  }
+
+  .email {
+    color: #777;
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .role {
+    color: #6a63d2;
+    font-weight: 500;
+    margin-bottom: 1rem;
+  }
+
+  .wallet-box {
+    background: linear-gradient(135deg, #6a63d2, #8b84f9);
+    color: white;
+    padding: 1rem;
+    border-radius: 12px;
+    margin-bottom: 1rem;
+
+    h3 {
+      margin: 0.5rem 0 0;
+      font-size: 1.4rem;
+      font-weight: 700;
+    }
+  }
+
+  .created-date {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 1.5rem;
+  }
+
+  .btn-group {
+    display: flex;
+    justify-content: space-around;
+    gap: 10px;
+
+    .btn-edit {
+      background: #6a63d2;
+      color: white;
+      border: none;
+      border-radius: 25px;
+      padding: 10px 20px;
+      cursor: pointer;
+      transition: 0.3s;
+
+      &:hover {
+        background: #554dc9;
+        transform: scale(1.05);
+      }
+    }
+
+    .btn-logout {
+      background: #e74c3c;
+      color: white;
+      border: none;
+      border-radius: 25px;
+      padding: 10px 20px;
+      cursor: pointer;
+      transition: 0.3s;
+
+      &:hover {
+        background: #c0392b;
+        transform: scale(1.05);
+      }
+    }
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

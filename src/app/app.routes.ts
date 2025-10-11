@@ -8,6 +8,8 @@ import { AdminGames } from './admin-games/admin-games';
 import { AdminUsers } from './admin-users/admin-users';
 import { UserLibrary } from './user-library/user-library';
 import { UserCart } from './user-cart/user-cart';
+import { AdminProfile } from './admin-profile/admin-profile';
+import { AdminEditProfile } from './admin-edit-profile/admin-edit-profile';
 
 export const routes: Routes = [
     { path: '', component: Main },
@@ -18,6 +20,8 @@ export const routes: Routes = [
     { path: 'admin/games', component: AdminGames },
     { path: 'admin/users', component: AdminUsers },
     { path: 'home/user-library', component: UserLibrary },
-    { path: 'home/user-cart', component: UserCart }
+    { path: 'home/user-cart', component: UserCart },
+    { path: 'admin/profile', component: AdminProfile },
+    { path: 'admin/edit-profile', component: AdminEditProfile }
 
 ];
