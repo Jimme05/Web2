@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 // src/app/services/service.ts
 @Injectable({ providedIn: 'root' })
 export class ApiService {
-  private baseUrl = ' https://8f963cb2b5ea.ngrok-free.app/api';
+  private baseUrl = 'https://supervital-faustina-bodily.ngrok-free.dev/api';
 
   async login(email: string, password: string) {
     const res = await fetch(`${this.baseUrl}/Auth/login`, {
