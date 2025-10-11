@@ -1,38 +1,25 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AdminNavbar } from "../admin-navbar/admin-navbar";
 import { GameCard, Game } from '../game-card/game-card';
+import { ApiService } from '../services/service';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-admin-games',
   standalone: true,
-  imports: [CommonModule, AdminNavbar, GameCard],
+  imports: [CommonModule, AdminNavbar, GameCard,FormsModule],
   templateUrl: './admin-games.html',
   styleUrls: ['./admin-games.scss']
 })
-export class AdminGames {
-  constructor(private router: Router) {}
+export class AdminGames implements OnInit {
+  constructor(private router: Router, private api: ApiService) {}
 
-  // ===========================
-  // 🎮 ตัวอย่างข้อมูลเกม
-  // ===========================
-  games: Game[] = [
-    {
-      id: '1',
-      name: 'POINT BLANK',
-      genre: 'FPS',
-      price: 89,
-      description: 'เกมยิงสุดมันส์ เล่นได้ฟรี!',
-      image: 'https://cdn.cloudflare.steamstatic.com/steam/apps/873420/header.jpg'
-    }
-  ];
-
-  // ===========================
-  // 📦 ตัวแปรสำหรับ modal เพิ่มเกม
-  // ===========================
+  games: Game[] = [];
   showModal = false;
   previewImage: string | null = null;
+  selectedFile: File | null = null;
 
   newGame: Game = {
     id: '',
@@ -43,8 +30,31 @@ export class AdminGames {
     image: ''
   };
 
+  ngOnInit(): void {
+    this.loadGames();
+  }
+
+  // ✅ โหลดเกมจาก backend (.NET)
+  async loadGames() {
+    try {
+      const res = await this.api.getGames();
+      this.games = res.map((g: any) => ({
+        id: g.id,
+        name: g.title,
+        genre: g.genre,
+        price: g.price,
+        description: g.description,
+        image: g.imagePath
+          ? `http://202.28.34.203:30000/upload/${g.imagePath}`
+          : 'assets/default-game.jpg'
+      }));
+    } catch (err) {
+      console.error('โหลดเกมไม่สำเร็จ', err);
+    }
+  }
+
   // ===========================
-  // 🎯 เปิด/ปิด modal
+  // Modal Control
   // ===========================
   openAddModal() {
     this.showModal = true;
@@ -61,66 +71,81 @@ export class AdminGames {
   }
 
   // ===========================
-  // 🖼️ อัปโหลดรูปเกม
+  // Upload File + Preview
   // ===========================
   onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
+      const file = input.files[0];
+      this.selectedFile = file;
+
       const reader = new FileReader();
-      reader.onload = () => {
-        this.previewImage = reader.result as string;
-        this.newGame.image = this.previewImage;
-      };
-      reader.readAsDataURL(input.files[0]);
+      reader.onload = () => (this.previewImage = reader.result as string);
+      reader.readAsDataURL(file);
     }
   }
 
   // ===========================
-  // ➕ เพิ่มเกมใหม่
+  // เพิ่มเกมใหม่
   // ===========================
-  addGame() {
+  async addGame() {
     if (!this.newGame.name || !this.newGame.genre || !this.newGame.price) return;
 
-    this.newGame.id = Date.now().toString();
-    this.newGame.image = this.previewImage || '';
+    try {
+      let fileName = '';
 
-    this.games.push({ ...this.newGame });
-    this.showModal = false;
-  }
+      // ✅ อัปโหลดไฟล์ก่อน (ถ้ามี)
+      if (this.selectedFile) {
+        const form = new FormData();
+        form.append('file', this.selectedFile, this.selectedFile.name);
 
-  // ===========================
-  // 🗑️ ลบเกม
-  // ===========================
-  deleteGame(g: Game) {
-    if (confirm(`คุณแน่ใจว่าจะลบ "${g.name}" หรือไม่?`)) {
-      this.games = this.games.filter(x => x.id !== g.id);
+        const uploadRes = await fetch('http://202.28.34.203:30000/upload', {
+          method: 'POST',
+          body: form
+        });
+
+        if (!uploadRes.ok) throw new Error('อัปโหลดรูปไม่สำเร็จ');
+        const data = await uploadRes.json();
+        fileName = data.storedName || data.filename || '';
+      }
+
+      // ✅ ส่งข้อมูลไปหลังบ้าน .NET
+      const payload = {
+        title: this.newGame.name,
+        genre: this.newGame.genre,
+        description: this.newGame.description,
+        price: this.newGame.price,
+        imagePath: fileName
+      };
+
+      await this.api.createGame(payload);
+      alert('เพิ่มเกมสำเร็จ ✅');
+      this.showModal = false;
+      await this.loadGames();
+    } catch (err: any) {
+      alert('เกิดข้อผิดพลาด: ' + err.message);
     }
   }
 
   // ===========================
-  // ✏️ แก้ไขเกม
+  // ลบเกม
+  // ===========================
+  async deleteGame(g: Game) {
+    if (!confirm(`คุณแน่ใจว่าจะลบ "${g.name}" หรือไม่?`)) return;
+
+    try {
+      await this.api.deleteGame(g.id);
+      this.games = this.games.filter(x => x.id !== g.id);
+      alert('ลบเกมเรียบร้อย ✅');
+    } catch (err) {
+      alert('ลบเกมไม่สำเร็จ ❌');
+    }
+  }
+
+  // ===========================
+  // แก้ไขเกม (เพิ่มภายหลัง)
   // ===========================
   editGame(g: Game) {
     alert(`ฟังก์ชันแก้ไข "${g.name}" กำลังพัฒนา 🔧`);
-  }
-
-  // ===========================
-  // 🔹 ปุ่ม navbar (backup ไว้ใช้ได้)
-  // ===========================
-  goToDashboard() {
-    this.router.navigate(['/admin']);
-  }
-
-  goToManageGames() {
-    this.router.navigate(['/admin/games']);
-  }
-
-  goToUsers() {
-    this.router.navigate(['/admin/users']);
-  }
-
-  logout() {
-    localStorage.removeItem('currentUser');
-    this.router.navigate(['/']);
   }
 }
