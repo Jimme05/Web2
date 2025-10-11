@@ -15,6 +15,14 @@ export interface Game {
   imagePath?: string; // ชื่อไฟล์รูปจาก backend (ถ้ามี)
 }
 
+interface CartItem {
+  gameId: number;
+  title: string;
+  price: number;
+  qty: number;
+  imageFileName?: string | null;
+}
+
 @Component({
   selector: 'app-home',
   standalone: true,
@@ -28,14 +36,95 @@ export class Home {
   constructor(private router: Router, private api: ApiService) {}
 
   games: Game[] = [];
-
+  
   searchTerm = '';
   selectedGenre = 'ทุกประเภท';
   genres = ['ทุกประเภท', 'RPG', 'Racing', 'Strategy', 'FPS', 'Adventure', 'Action'];
 
-  async ngOnInit() {
-    await this.loadGames(); // โหลดครั้งแรก
+  cart: CartItem[] = [];
+cartKey = 'cart:guest'; // เปลี่ยนเป็น cart:<userId> ถ้าล็อกอิน
+
+async ngOnInit() {
+  // ถ้ามี currentUser เก็บ userId/อีเมลไว้ เปลี่ยน key ให้เฉพาะคน
+  const cu = localStorage.getItem('currentUser');
+  if (cu) {
+    try {
+      const u = JSON.parse(cu);
+      const keyId = u?.id || u?.email || 'guest';
+      this.cartKey = `cart:${keyId}`;
+    } catch {}
   }
+  this.loadCart();
+
+  await this.loadGames();
+} 
+// ===== Cart helpers =====
+loadCart() {
+  const raw = localStorage.getItem(this.cartKey);
+  this.cart = raw ? JSON.parse(raw) : [];
+}
+
+saveCart() {
+  localStorage.setItem(this.cartKey, JSON.stringify(this.cart));
+}
+
+get cartCount(): number {
+  return this.cart.reduce((sum, it) => sum + it.qty, 0);
+}
+
+get cartTotal(): number {
+  return this.cart.reduce((sum, it) => sum + it.qty * it.price, 0);
+}
+
+addToCart(g: Game) {
+  const cuRaw = localStorage.getItem('currentUser');
+  let cartKey = 'cart:guest';
+  if (cuRaw) {
+    try {
+      const cu = JSON.parse(cuRaw);
+      const keyId = cu?.id || cu?.email || 'guest';
+      cartKey = `cart:${keyId}`;
+    } catch {}
+  }
+
+  // โหลดตะกร้าเก่า
+  const raw = localStorage.getItem(cartKey);
+  let cart = raw ? JSON.parse(raw) : [];
+
+  // หาเกมซ้ำ
+  const existing = cart.find((x: any) => x.gameId === g.id);
+  if (existing) {
+    existing.qty += 1;
+  } else {
+    // ✅ ใช้ g.imagePath จาก backend โดยตรง
+    cart.push({
+      gameId: g.id,
+      title: g.title,
+      price: g.price,
+      qty: 1,
+      imageFileName: g.imagePath ?? null
+    });
+  }
+
+  localStorage.setItem(cartKey, JSON.stringify(cart));
+  alert(`เพิ่ม "${g.title}" ลงตะกร้าแล้ว!`);
+}
+
+
+// (ทางเลือก) ลบ/ลดจำนวน
+decreaseItem(g: Game) {
+  const idx = this.cart.findIndex(x => x.gameId === g.id);
+  if (idx >= 0) {
+    this.cart[idx].qty -= 1;
+    if (this.cart[idx].qty <= 0) this.cart.splice(idx, 1);
+    this.saveCart();
+  }
+}
+
+removeItem(g: Game) {
+  this.cart = this.cart.filter(x => x.gameId !== g.id);
+  this.saveCart();
+}
 
   async loadGames() {
   try {
@@ -45,12 +134,7 @@ export class Home {
     this.games = [];
   }
 }
-  addToCart(game: Game) {
-  const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-  cart.push(game);
-  localStorage.setItem('cart', JSON.stringify(cart));
-  alert(`เพิ่ม ${game.title} ลงในตะกร้าแล้ว 🛒`);
-}
+  
   // เรียกตอนพิมพ์ค้นหา
   onSearchChange() {
     this.loadGames();

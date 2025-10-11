@@ -1,5 +1,5 @@
 <!-- 🎮 Navbar -->
-<app-user-navbar [balance]="balance" [cartCount]="cart.length"></app-user-navbar>
+<app-user-navbar [balance]="balance" [cartCount]="cartCount"></app-user-navbar>
 
 <!-- 🛒 หน้าตะกร้า -->
 <div class="cart-container">
@@ -8,15 +8,26 @@
 
     <!-- ถ้ามีสินค้า -->
     <div *ngIf="cart.length > 0; else emptyCart">
-      <div class="cart-item" *ngFor="let item of cart">
-        <img [src]="item.image" alt="Game Image" class="item-img" />
-
+      <div class="cart-item" *ngFor="let it of cart">
+        <img [src]="imageUrl(it)" alt="Game Image" class="item-img" />
+      
+         
         <div class="item-info">
-          <h3>{{ item.title }}</h3>
-          <p class="price">฿{{ item.price.toFixed(2) }}</p>
+          <h3 class="title">{{ it.title }}</h3>
+          <div class="qty-row">
+            
+            <span class="qty">{{ it.qty }}</span>
+           
+          </div>
+
         </div>
 
-        <button class="btn-remove" (click)="removeFromCart(item)">ลบ</button>
+        <div class="price-col">
+          <div class="unit">฿{{ it.price | number:'1.0-0' }}</div>
+          <div class="total">฿{{ itemTotal(it) | number:'1.0-0' }}</div>
+        </div>
+
+        <button class="btn-remove" (click)="removeFromCart(it)">ลบ</button>
       </div>
 
       <!-- 🔹 ช่องใส่โค้ดส่วนลด -->
@@ -31,8 +42,9 @@
 
       <!-- 🔹 สรุปราคา -->
       <div class="summary">
-        <p>ราคาเต็ม : ฿{{ totalPrice.toFixed(2) }}</p>
-        <h3>รวมทั้งสิ้น : <span>฿{{ finalPrice.toFixed(2) }}</span></h3>
+        <p>ราคาเต็ม : ฿{{ totalPrice | number:'1.0-0' }}</p>
+        <p *ngIf="discountValue > 0">ส่วนลด : −฿{{ discountValue | number:'1.0-0' }}</p>
+        <h3>รวมทั้งสิ้น : <span>฿{{ finalPrice | number:'1.0-0' }}</span></h3>
       </div>
 
       <button class="btn-pay" (click)="checkout()">ชำระเงิน</button>
