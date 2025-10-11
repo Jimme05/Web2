@@ -1,9 +1,14 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { inject } from '@angular/core';
 
-// src/app/services/service.ts
-@Injectable({ providedIn: 'root' })
+@Injectable({
+  providedIn: 'root' // ✅ สำคัญมาก
+})
 export class ApiService {
   private baseUrl = 'https://wepapi-59g1.onrender.com/api';
+  constructor(private http: HttpClient) {}
+
 
   async login(email: string, password: string) {
     const res = await fetch(`${this.baseUrl}/Auth/login`, {
@@ -104,5 +109,12 @@ export class ApiService {
     });
     if (!res.ok) throw new Error('อัปเดตเกมไม่สำเร็จ');
     return res.json();
+  }
+  async getUsers() {
+    return this.http.get(`${this.baseUrl}/Transactions`);
+  }
+
+  async getTransactionsByUser(email: string) {
+    return this.http.get(`${this.baseUrl}/Transactions/${email}`);
   }
 }

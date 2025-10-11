@@ -1,10 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AdminNavbar } from '../admin-navbar/admin-navbar';
 import { CommonModule } from '@angular/common';
+import { ApiService } from '../services/service';
+
 interface User {
   id: string;
-  username: string;
+  name: string;
   email: string;
   walletBalance: number;
   profileImage?: string;
@@ -12,43 +14,32 @@ interface User {
 
 @Component({
   selector: 'app-admin-users',
+  standalone: true,
   imports: [CommonModule, AdminNavbar],
   templateUrl: './admin-users.html',
-  styleUrl: './admin-users.scss'
+  styleUrls: ['./admin-users.scss']
 })
-export class AdminUsers {
-users: User[] = [];
+export class AdminUsers implements OnInit {
+  users: User[] = [];
+  loading = false;
+  error = '';
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private api: ApiService) {}
 
-  ngOnInit(): void {
-    // โหลดข้อมูล user จาก localStorage
-    const usersJson = localStorage.getItem('users');
-    if (usersJson) {
-      this.users = JSON.parse(usersJson);
-    } else {
-      // ตัวอย่าง mock data
-      this.users = [
-        {
-          id: '1',
-          username: 'nameUser',
-          email: 'example@email.com',
-          walletBalance: 1500,
-          profileImage: ''
-        },
-        {
-          id: '2',
-          username: 'playerX',
-          email: 'playerx@mail.com',
-          walletBalance: 200,
-          profileImage: ''
-        }
-      ];
+  async ngOnInit() {
+    this.loading = true;
+    try {
+      const data = await (await this.api.getUsers()).toPromise() as User[];
+      this.users = data ?? [];
+    } catch (err) {
+      console.error(err);
+      this.error = 'ไม่สามารถโหลดข้อมูลผู้ใช้ได้';
+    } finally {
+      this.loading = false;
     }
   }
 
   viewHistory(user: User) {
-    alert(`แสดงประวัติของ ${user.username}`);
-    // ตัวอย่าง: this.router.navigate(['/admin/user-history', user.id]);
+    this.router.navigate(['/admin/user-history', user.id]);
   }
 }
