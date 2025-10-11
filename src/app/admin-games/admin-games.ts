@@ -20,6 +20,10 @@ export class AdminGames implements OnInit {
   showModal = false;
   previewImage: string | null = null;
   selectedFile: File | null = null;
+  selectedGame: Game | null = null;  // ✅ เก็บเกมที่คลิก
+  showDetailModal = false;  // ✅ Modal รายละเอียด
+  
+  editMode = false; // ✅ โหมดแก้ไข
 
   newGame: Game = {
     id: '',
@@ -58,9 +62,18 @@ export class AdminGames implements OnInit {
   // ===========================
   openAddModal() {
     this.showModal = true;
+     this.editMode = false;
     this.newGame = { id: '', name: '', genre: '', price: 0, description: '', image: '' };
     this.previewImage = null;
   }
+  openEditModal(g: Game) {
+    this.showModal = true;
+    this.editMode = true; // ✅ เปิดโหมดแก้ไข
+    this.newGame = { ...g };
+    this.previewImage = g.image;
+    this.selectedGame = g;
+  }
+
 
   closeModal(event?: MouseEvent) {
     if (event && (event.target as HTMLElement).classList.contains('modal-overlay')) {
@@ -69,6 +82,23 @@ export class AdminGames implements OnInit {
       this.showModal = false;
     }
   }
+
+   // ✅ เปิดรายละเอียดเกม
+  openDetailModal(game: Game) {
+    this.selectedGame = game;
+    this.showDetailModal = true;
+  }
+
+  // ✅ ปิด modal รายละเอียด
+  closeDetailModal(event?: MouseEvent) {
+    if (event && (event.target as HTMLElement).classList.contains('modal-overlay')) {
+      this.showDetailModal = false;
+    } else if (!event) {
+      this.showDetailModal = false;
+    }
+  }
+
+  
 
   // ===========================
   // Upload File + Preview
@@ -127,6 +157,59 @@ export class AdminGames implements OnInit {
     }
   }
 
+  async updateGame() {
+    if (!this.newGame.id) return;
+
+    try {
+      let fileName = '';
+
+      // ✅ ถ้ามีอัปโหลดรูปใหม่
+      if (this.selectedFile) {
+        const form = new FormData();
+        form.append('file', this.selectedFile, this.selectedFile.name);
+
+        const uploadRes = await fetch('http://202.28.34.203:30000/upload', {
+          method: 'POST',
+          body: form
+        });
+        if (!uploadRes.ok) throw new Error('อัปโหลดรูปไม่สำเร็จ');
+        const data = await uploadRes.json();
+        fileName = data.storedName || data.filename || '';
+      }
+
+      const payload = {
+        id: this.newGame.id,
+        title: this.newGame.name,
+        genre: this.newGame.genre,
+        description: this.newGame.description,
+        price: this.newGame.price,
+        imagePath: fileName || this.newGame.image
+      };
+
+      await this.api.updateGame(payload.id, payload);
+
+      // ✅ อัปเดตเฉพาะใน list ไม่ต้อง reload ทั้งหมด
+      const index = this.games.findIndex(g => g.id === payload.id);
+      if (index !== -1) {
+        this.games[index] = {
+          id: payload.id,
+          name: payload.title,
+          genre: payload.genre,
+          description: payload.description,
+          price: payload.price,
+          image: fileName
+            ? `http://202.28.34.203:30000/upload/${fileName}`
+            : this.games[index].image
+        };
+      }
+
+      alert('แก้ไขข้อมูลสำเร็จ ✅');
+      this.showModal = false;
+    } catch (err: any) {
+      alert('เกิดข้อผิดพลาด: ' + err.message);
+    }
+  }
+
   // ===========================
   // ลบเกม
   // ===========================
@@ -146,6 +229,6 @@ export class AdminGames implements OnInit {
   // แก้ไขเกม (เพิ่มภายหลัง)
   // ===========================
   editGame(g: Game) {
-    alert(`ฟังก์ชันแก้ไข "${g.name}" กำลังพัฒนา 🔧`);
+    this.openEditModal(g);
   }
 }

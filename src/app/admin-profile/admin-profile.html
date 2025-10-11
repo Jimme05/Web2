@@ -1,0 +1,22 @@
+<app-admin-navbar></app-admin-navbar>
+
+<div class="profile-container" *ngIf="currentAdmin">
+    <div class="profile-card">
+        <img [src]="profileImageUrl || 'assets/admin-avatar.png'" alt="Admin Avatar" class="profile-img" />
+
+        <h2>{{ currentAdmin.name }}</h2>
+        <p class="email">{{ currentAdmin.email }}</p>
+        <p class="role">🛠 บทบาท: {{ currentAdmin.role }}</p>
+
+        <div class="wallet-box">
+            <p>💰 ยอดเงินคงเหลือ</p>
+            <h3>{{ walletBalance | number }} บาท</h3>
+        </div>
+
+        <p class="created-date">📅 สร้างบัญชีเมื่อ: {{ currentAdmin.createdAt | date:'mediumDate' }}</p>
+
+        <div class="btn-group">
+            <button class="btn-edit" (click)="goToEditProfile()">✏️ แก้ไขข้อมูล</button>
+        </div>
+    </div>
+</div>

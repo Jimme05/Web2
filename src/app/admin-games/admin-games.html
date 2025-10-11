@@ -3,76 +3,112 @@
 
 <!-- 🔹 ส่วนหัว -->
 <div class="game-container">
-  <div class="game-header">
-    <h2>🎮 จัดการเกม</h2>
-    <button class="btn-add" (click)="openAddModal()">➕ เพิ่มเกมใหม่</button>
-  </div>
+    <div class="game-header">
+        <h2>🎮 จัดการเกม</h2>
+        <button class="btn-add" (click)="openAddModal()">➕ เพิ่มเกมใหม่</button>
+    </div>
 
-  <!-- 🔹 รายการเกม -->
-  <div class="game-list">
-    <app-game-card
-      *ngFor="let g of games"
-      [game]="g"
-      (edit)="editGame($event)"
-      (delete)="deleteGame($event)">
-    </app-game-card>
-  </div>
+    <!-- 🔹 รายการเกม -->
+    <div class="game-list">
+        <app-game-card *ngFor="let g of games" [game]="g" (click)="openDetailModal(g)" (edit)="editGame($event)"
+            (delete)="deleteGame($event)">
+        </app-game-card>
+    </div>
 </div>
 
 <!-- 🔹 Modal เพิ่มเกม -->
 <div class="modal-overlay" *ngIf="showModal" (click)="closeModal($event)">
-  <div class="modal-card" (click)="$event.stopPropagation()">
-    <h3>➕ เพิ่มเกมใหม่</h3>
+    <div class="modal-card" (click)="$event.stopPropagation()">
+        <h3>➕ เพิ่มเกมใหม่</h3>
 
-    <form (ngSubmit)="addGame()" enctype="multipart/form-data">
+        <form (ngSubmit)="addGame()" enctype="multipart/form-data">
+            <div class="form-group">
+                <label>ชื่อเกม</label>
+                <input type="text" name="name" [(ngModel)]="newGame.name" required placeholder="กรอกชื่อเกม" />
+            </div>
+
+            <div class="form-group">
+                <label>ประเภท</label>
+                <input type="text" name="genre" [(ngModel)]="newGame.genre" required
+                    placeholder="เช่น FPS, RPG, Racing" />
+            </div>
+
+            <div class="form-group">
+                <label>ราคา (บาท)</label>
+                <input type="number" name="price" [(ngModel)]="newGame.price" required min="0" placeholder="เช่น 299" />
+            </div>
+
+            <div class="form-group">
+                <label>รายละเอียด</label>
+                <textarea name="description" [(ngModel)]="newGame.description" rows="3"
+                    placeholder="รายละเอียดของเกม..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>รูปภาพเกม</label>
+                <input type="file" accept="image/*" (change)="onFileSelected($event)" />
+
+                <!-- 🔸 แสดง Preview -->
+                <div class="preview" *ngIf="previewImage">
+                    <img [src]="previewImage" alt="Preview" />
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" class="btn-cancel" (click)="closeModal()">ยกเลิก</button>
+                <button type="submit" class="btn-submit">💾 บันทึกเกม</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- 🟣 Modal รายละเอียดเกม -->
+<div class="modal-overlay" *ngIf="showDetailModal" (click)="closeDetailModal($event)">
+    <div class="modal-detail" (click)="$event.stopPropagation()">
+        <button class="btn-close" (click)="closeDetailModal()">✖</button>
+
+        <img [src]="selectedGame?.image" alt="Game Image" class="detail-img" />
+
+        <div class="detail-content">
+            <h2>{{ selectedGame?.name }}</h2>
+            <p class="genre">🎮 {{ selectedGame?.genre }}</p>
+            <p class="price">💰 {{ selectedGame?.price | number }} บาท</p>
+            <p class="desc">{{ selectedGame?.description || 'ไม่มีรายละเอียด' }}</p>
+        </div>
+    </div>
+</div>
+<!-- 🔹 Modal เพิ่ม/แก้ไขเกม -->
+<div class="modal-overlay" *ngIf="showModal" (click)="closeModal($event)">
+  <div class="modal-card" (click)="$event.stopPropagation()">
+    <h3 *ngIf="!editMode">➕ เพิ่มเกมใหม่</h3>
+    <h3 *ngIf="editMode">🛠 แก้ไขข้อมูลเกม</h3>
+
+    <form (ngSubmit)="editMode ? updateGame() : addGame()" enctype="multipart/form-data">
       <div class="form-group">
         <label>ชื่อเกม</label>
-        <input
-          type="text"
-          name="name"
-          [(ngModel)]="newGame.name"
-          required
-          placeholder="กรอกชื่อเกม" />
+        <input type="text" name="name" [(ngModel)]="newGame.name" required placeholder="กรอกชื่อเกม" />
       </div>
 
       <div class="form-group">
         <label>ประเภท</label>
-        <input
-          type="text"
-          name="genre"
-          [(ngModel)]="newGame.genre"
-          required
-          placeholder="เช่น FPS, RPG, Racing" />
+        <input type="text" name="genre" [(ngModel)]="newGame.genre" required placeholder="เช่น FPS, RPG, Racing" />
       </div>
 
       <div class="form-group">
         <label>ราคา (บาท)</label>
-        <input
-          type="number"
-          name="price"
-          [(ngModel)]="newGame.price"
-          required
-          min="0"
-          placeholder="เช่น 299" />
+        <input type="number" name="price" [(ngModel)]="newGame.price" required min="0" placeholder="เช่น 299" />
       </div>
 
       <div class="form-group">
         <label>รายละเอียด</label>
-        <textarea
-          name="description"
-          [(ngModel)]="newGame.description"
-          rows="3"
+        <textarea name="description" [(ngModel)]="newGame.description" rows="3"
           placeholder="รายละเอียดของเกม..."></textarea>
       </div>
 
       <div class="form-group">
         <label>รูปภาพเกม</label>
-        <input
-          type="file"
-          accept="image/*"
-          (change)="onFileSelected($event)" />
+        <input type="file" accept="image/*" (change)="onFileSelected($event)" />
 
-        <!-- 🔸 แสดง Preview -->
         <div class="preview" *ngIf="previewImage">
           <img [src]="previewImage" alt="Preview" />
         </div>
@@ -80,7 +116,9 @@
 
       <div class="form-actions">
         <button type="button" class="btn-cancel" (click)="closeModal()">ยกเลิก</button>
-        <button type="submit" class="btn-submit">💾 บันทึกเกม</button>
+        <button type="submit" class="btn-submit">
+          {{ editMode ? "💾 บันทึกการแก้ไข" : "💾 บันทึกเกม" }}
+        </button>
       </div>
     </form>
   </div>

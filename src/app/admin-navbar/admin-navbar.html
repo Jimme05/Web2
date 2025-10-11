@@ -1,28 +1,33 @@
 <nav class="navbar">
-    <div class="logo" (click)="goToDashboard()" style="cursor: pointer;">
-        <span>🎮</span> GameShop
-    </div>
+  <div class="logo" (click)="goToDashboard()" style="cursor: pointer;">
+    <span>🎮</span> GameShop
+  </div>
 
-    <div class="nav-links">
-        <!-- ✅ Dashboard -->
-        <button class="nav-btn" routerLink="/admin" routerLinkActive="active"
-            [routerLinkActiveOptions]="{ exact: true }">
-            แดชบอร์ด
-        </button>
+  <div class="nav-links">
+    <!-- ✅ หน้า Dashboard -->
+    <button class="nav-btn" routerLink="/admin" routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }">
+      หน้าแอดมิน
+    </button>
 
-        <!-- ✅ Manage Games -->
-        <button class="nav-btn-outline" routerLink="/admin/games" routerLinkActive="active">
-            จัดการเกม
-        </button>
+    <!-- ✅ จัดการเกม -->
+    <button class="nav-btn-outline" routerLink="/admin/games" routerLinkActive="active">
+      จัดการเกม
+    </button>
 
-        <!-- ✅ Manage Users -->
-        <button class="nav-btn-outline" routerLink="/admin/users" routerLinkActive="active">
-            จัดการผู้ใช้
-        </button>
+    <!-- ✅ จัดการผู้ใช้ -->
+    <button class="nav-btn-outline" routerLink="/admin/users" routerLinkActive="active">
+      จัดการผู้ใช้
+    </button>
 
-        <!-- 🚪 Logout -->
-        <button class="nav-btn-outline logout" (click)="logout()">
-            ออกจากระบบ
-        </button>
-    </div>
+    <!-- ✅ โปรไฟล์แอดมิน -->
+    <button class="nav-btn-outline" routerLink="/admin/profile" routerLinkActive="active">
+      โปรไฟล์แอดมิน
+    </button>
+
+    <!-- 🚪 Logout -->
+    <button class="nav-btn-outline logout" (click)="logout()">
+      ออกจากระบบ
+    </button>
+  </div>
 </nav>
