@@ -6,7 +6,8 @@ import { inject } from '@angular/core';
   providedIn: 'root' // ✅ สำคัญมาก
 })
 export class ApiService {
-  private baseUrl = 'https://wepapi-59g1.onrender.com/api';
+  private baseUrl = 'https://wepapi-59g1.onrender.com/api'
+  private pho = 'http://202.28.34.203:30000';;
   constructor(private http: HttpClient) {}
 
 
@@ -79,10 +80,24 @@ export class ApiService {
     }
     return data; // อาจเป็น null ได้ ถ้า API ไม่ส่ง body
   }
-  async getGames() {
-    const res = await fetch(this.baseUrl + '/Games');
+  async getGames(search: string = '', genre: string = '') {
+    // ✅ รองรับ query parameters เช่น ?search=FPS&genre=Action
+    const params = new URLSearchParams();
+    if (search) params.append('search', search);
+    if (genre) params.append('genre', genre);
+
+    const res = await fetch(`${this.baseUrl}/Games?${params.toString()}`);
     if (!res.ok) throw new Error('โหลดเกมไม่สำเร็จ');
-    return res.json();
+
+    const data = await res.json();
+
+    // ✅ เติม URL รูปจาก 203 ให้เกมแต่ละรายการ
+    return data.map((g: any) => ({
+      ...g,
+      imageUrl: g.FileName
+        ? `${this.pho}/upload/${g.FileName}`
+        : 'assets/no-image.png'
+    }));
   }
 
   async createGame(data: any) {

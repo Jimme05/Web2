@@ -1,62 +1,83 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { UserNavbar } from "../user-navbar/user-navbar";
+import { ApiService } from '../services/service';
+import { environment } from '../services/environment';
 
-interface Game {
+export interface Game {
   id: number;
   title: string;
   genre: string;
   price: number;
   rank: number;
+  imagePath?: string; // ชื่อไฟล์รูปจาก backend (ถ้ามี)
 }
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [UserNavbar],
+  imports: [UserNavbar, CommonModule, FormsModule, RouterLink],
   templateUrl: './home.html',
   styleUrl: './home.scss'
 })
 export class Home {
   balance = 5000;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private api: ApiService) {}
 
-  games: Game[] = [
-    { id: 1, title: 'Cyberpunk Adventure', genre: 'RPG', price: 1590, rank: 1 },
-    { id: 2, title: 'Racing Thunder', genre: 'Racing', price: 1299, rank: 2 },
-    { id: 3, title: 'Space Strategy', genre: 'Strategy', price: 899, rank: 3 },
-    { id: 4, title: 'Combat Elite', genre: 'FPS', price: 990, rank: 4 },
-    { id: 5, title: 'Fantasy Quest', genre: 'Adventure', price: 1200, rank: 5 },
-    { id: 6, title: 'Mech Warrior', genre: 'Action', price: 1100, rank: 6 }
-  ];
+  games: Game[] = [];
 
   searchTerm = '';
   selectedGenre = 'ทุกประเภท';
   genres = ['ทุกประเภท', 'RPG', 'Racing', 'Strategy', 'FPS', 'Adventure', 'Action'];
 
-  // =====================
+  async ngOnInit() {
+    await this.loadGames(); // โหลดครั้งแรก
+  }
+
+  async loadGames() {
+  try {
+    this.games = await this.api.getGames(this.searchTerm, this.selectedGenre === 'ทุกประเภท' ? '' : this.selectedGenre);
+  } catch (err) {
+    console.error('โหลดเกมไม่สำเร็จ', err);
+    this.games = [];
+  }
+}
+  addToCart(game: Game) {
+  const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+  cart.push(game);
+  localStorage.setItem('cart', JSON.stringify(cart));
+  alert(`เพิ่ม ${game.title} ลงในตะกร้าแล้ว 🛒`);
+}
+  // เรียกตอนพิมพ์ค้นหา
+  onSearchChange() {
+    this.loadGames();
+  }
+
+  // เรียกตอนเปลี่ยนประเภท
+  onGenreChange() {
+    this.loadGames();
+  }
+
+  imageUrl(imagePath?: string | null): string {
+    // ถ้า server เก็บไฟล์ไว้ที่ 203 เช่น /upload/<imagePath>
+    return `http://202.28.34.203:30000/upload/${imagePath}`;
+  }
+
   // 👤 ไปหน้าโปรไฟล์
-  // =====================
   async goToProfile() {
     await this.router.navigate(['/profile']);
   }
 
-  // =====================
-  // 🚪 ออกจากระบบ (รีเซ็ต session)
-  // =====================
+  // 🚪 ออกจากระบบ
   logout() {
-    // ✅ เคลียร์ข้อมูล session ทั้งหมด
     localStorage.removeItem('currentUser');
     localStorage.removeItem('cart');
     localStorage.removeItem('transactions');
     localStorage.removeItem('walletBalance');
-    // หรือจะล้างทั้งหมดเลยก็ได้
-    // localStorage.clear();
-
     alert('ออกจากระบบเรียบร้อย ✅');
-
-    // ✅ พากลับไปหน้าแรก (เช่น หน้า main/login)
     this.router.navigate(['/']);
   }
 }

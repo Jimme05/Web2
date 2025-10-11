@@ -3,28 +3,55 @@
 
 <!-- 🛍️ เนื้อหา -->
 <div class="container">
-    <div class="store-box">
-        <h2 class="store-title">🎮 ร้านค้าเกม</h2>
+  <div class="store-box">
+    <h2 class="store-title">🎮 ร้านค้าเกม</h2>
 
-        <div class="search-row">
-            <input type="text" placeholder="ค้นหาเกม..." />
-            <select>
-                <option *ngFor="let genre of genres">{{ genre }}</option>
-            </select>
-            <button class="btn-search">🔍 ค้นหา</button>
-        </div>
+    <!-- 🔍 แถวค้นหา -->
+    <div class="search-row">
+      <input
+        type="text"
+        placeholder="ค้นหาเกม..."
+        [(ngModel)]="searchTerm"
+        (ngModelChange)="onSearchChange()"
+      />
 
-        <div class="games-grid">
-            <div class="game-card" *ngFor="let g of filteredGames">
-                <div class="game-banner">{{ g.title }}</div>
-                <div class="game-info">
-                    <h3>{{ g.title }}</h3>
-                    <p class="genre">{{ g.genre }}</p>
-                    <p class="price">฿{{ g.price }}</p>
-                    <div class="rank">🏅 อันดับ {{ g.rank }}</div>
-                    <button class="btn-cart">🛒 เพิ่มลงตะกร้า</button>
-                </div>
-            </div>
-        </div>
+      <select [(ngModel)]="selectedGenre" (change)="onGenreChange()">
+        <option *ngFor="let genre of genres" [value]="genre">
+          {{ genre }}
+        </option>
+      </select>
+
+      <button class="btn-search" (click)="loadGames()">🔍 ค้นหา</button>
     </div>
+
+    <!-- 🎮 รายการเกม -->
+    <div class="games-grid">
+      <div class="game-card" *ngFor="let g of games">
+        <!-- ✅ แสดงรูปจาก server 203 -->
+        <div class="game-banner">
+          <img
+            [src]="imageUrl(g.imagePath)"
+            alt="{{ g.title }}"
+            class="game-image"
+          />
+        </div>
+
+        <div class="game-info">
+          <h3>{{ g.title }}</h3>
+          <p class="genre">🎯 {{ g.genre }}</p>
+          <p class="price">💰 ฿{{ g.price }}</p>
+          <div class="rank">🏅 อันดับ {{ g.rank }}</div>
+
+          <button class="btn-cart" (click)="addToCart(g)">
+            🛒 เพิ่มลงตะกร้า
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ❌ ถ้าไม่มีเกม -->
+    <div class="empty-state" *ngIf="games.length === 0">
+      <p>ไม่พบเกมที่ตรงกับคำค้นหา 😢</p>
+    </div>
+  </div>
 </div>
