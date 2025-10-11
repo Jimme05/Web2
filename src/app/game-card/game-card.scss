@@ -1,0 +1,117 @@
+.game-card {
+  background: #ffffff;
+  border-radius: 16px;
+  overflow: hidden;
+  width: 240px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 6px 15px rgba(106, 99, 210, 0.15);
+  transition: all 0.3s ease;
+  position: relative;
+  cursor: pointer;
+
+  &:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 12px 25px rgba(106, 99, 210, 0.3);
+  }
+
+  /* รูปภาพเกม */
+  .game-img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-bottom: 2px solid #eceaff;
+    transition: all 0.3s ease;
+
+    &:hover {
+      filter: brightness(1.1);
+    }
+  }
+
+  /* ส่วนข้อมูล */
+  .game-info {
+    padding: 12px 14px;
+    text-align: center;
+
+    h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #2b2b2b;
+      margin-bottom: 4px;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    .genre {
+      color: #6a63d2;
+      font-weight: 500;
+      font-size: 0.85rem;
+      margin-bottom: 6px;
+    }
+
+    .price {
+      color: #3b3b3b;
+      font-size: 1.1rem;
+      font-weight: 700;
+      background: linear-gradient(90deg, #5a52d6, #867df2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 8px;
+    }
+
+    /* ปุ่ม */
+    .btn-group {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 10px;
+
+      button {
+        border: none;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        padding: 6px 12px;
+        cursor: pointer;
+        transition: all 0.25s ease;
+      }
+
+      .btn-edit {
+        background: linear-gradient(135deg, #57a0ef, #4289db);
+        color: white;
+
+        &:hover {
+          transform: scale(1.05);
+          box-shadow: 0 0 10px rgba(87, 160, 239, 0.6);
+        }
+      }
+
+      .btn-delete {
+        background: linear-gradient(135deg, #ef5350, #e53935);
+        color: white;
+
+        &:hover {
+          transform: scale(1.05);
+          box-shadow: 0 0 10px rgba(239, 83, 80, 0.6);
+        }
+      }
+    }
+  }
+}
+
+/* Layout ของการ์ดใน list */
+:host-context(.game-list) {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: start;
+  padding: 20px 0;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .game-card {
+    width: 100%;
+  }
+}

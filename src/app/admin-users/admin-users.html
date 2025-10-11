@@ -1,0 +1,37 @@
+<app-admin-navbar></app-admin-navbar>
+
+<div class="container">
+  <div class="user-manage-box">
+    <h2 class="title">👥 จัดการผู้ใช้</h2>
+
+    <!-- รายการผู้ใช้ -->
+    <div class="user-list">
+      <div class="user-card" *ngFor="let user of users">
+        <div class="user-info">
+          <div class="user-avatar">
+            <img *ngIf="user.profileImage; else placeholder" [src]="user.profileImage" alt="profile" />
+            <ng-template #placeholder>
+              <div class="avatar-placeholder">👤</div>
+            </ng-template>
+          </div>
+
+          <div class="user-details">
+            <h3 class="user-name">{{ user.username }}</h3>
+            <p class="user-email">{{ user.email }}</p>
+            <p class="user-balance">ยอดเงินคงเหลือ: ฿{{ user.walletBalance | number }}</p>
+          </div>
+        </div>
+
+        <button class="btn-history" (click)="viewHistory(user)">
+          📜 ดูประวัติ
+        </button>
+      </div>
+    </div>
+
+    <!-- ถ้าไม่มีผู้ใช้ -->
+    <div class="empty-state" *ngIf="users.length === 0">
+      <div class="empty-icon">📭</div>
+      <p>ยังไม่มีผู้ใช้ในระบบ</p>
+    </div>
+  </div>
+</div>

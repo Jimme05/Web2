@@ -1,17 +1,4 @@
-<!-- 🔹 Navbar -->
-<nav class="navbar">
-    <div class="logo">
-        <span>🎮</span>
-        GameShop
-    </div>
-    <div class="nav-links">
-        <button class="nav-btn">แดชบอร์ด</button>
-        <button class="nav-btn-outline">จัดการเกม</button>
-        <button class="nav-btn-outline">จัดการผู้ใช้</button>
-        <button class="nav-btn-outline">ออกจากระบบ</button>
-    </div>
-</nav>
-
+<app-admin-navbar></app-admin-navbar>
 <!-- 🔹 Dashboard Content -->
 <div class="container">
     <div class="dashboard-box">
@@ -19,10 +6,10 @@
 
         <!-- 🔹 ปุ่มเมนูบน -->
         <div class="menu-row">
-            <button class="menu-btn">🎮 จัดการเกม</button>
-            <button class="menu-btn">👥 จัดการผู้ใช้</button>
-            <button class="menu-btn">💳 จัดการโค้ดส่วนลด</button>
-            <button class="menu-btn">📈 อันดับขาย</button>
+            <button class="menu-btn" routerLink="/admin/games" routerLinkActive="active">🎮 จัดการเกม</button>
+            <button class="menu-btn" routerLink="/admin/users" routerLinkActive="active">👥 จัดการผู้ใช้</button>
+            <button class="menu-btn" routerLink="/admin/discount-codes" routerLinkActive="active">💳 จัดการโค้ดส่วนลด</button>
+            <button class="menu-btn" routerLink="/admin/sales-ranking" routerLinkActive="active">📈 อันดับขาย</button>
         </div>
 
         <!-- 🔹 แถวสรุปข้อมูล -->

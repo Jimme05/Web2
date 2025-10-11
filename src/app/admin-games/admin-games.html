@@ -1,0 +1,58 @@
+<!-- 🔹 Navbar -->
+<app-admin-navbar></app-admin-navbar>
+
+<!-- 🔹 จัดการเกม -->
+<div class="game-container">
+  <div class="game-header">
+    <h2>🎮 จัดการเกม</h2>
+    <button class="btn-add" (click)="openAddModal()">➕ เพิ่มเกมใหม่</button>
+  </div>
+
+  <!-- 🔹 รายการเกม -->
+  <div class="game-list">
+  <app-game-card
+    *ngFor="let g of games"
+    [game]="g"
+    (edit)="editGame($event)"
+    (delete)="deleteGame($event)">
+  </app-game-card>
+</div>
+</div>
+
+<!-- 🔹 Modal เพิ่มเกม -->
+<div class="modal-overlay" *ngIf="showModal" (click)="closeModal($event)">
+  <div class="modal-card" (click)="$event.stopPropagation()">
+    <h3>เพิ่มเกมใหม่</h3>
+    <form (ngSubmit)="addGame()" enctype="multipart/form-data">
+      <div class="form-group">
+        <label>ชื่อเกม</label>
+        <input type="text"  name="name" required />
+      </div>
+
+      <div class="form-group">
+        <label>ประเภท</label>
+        <input type="text"  name="genre" required />
+      </div>
+
+      <div class="form-group">
+        <label>ราคา</label>
+        <input type="number"  name="price" required />
+      </div>
+
+      <div class="form-group">
+        <label>รายละเอียด</label>
+        <textarea  name="description" rows="3"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>รูปภาพเกม</label>
+        <input type="file" accept="image/*" (change)="onFileSelected($event)" />
+        <div class="preview" *ngIf="previewImage">
+          <img [src]="previewImage" alt="Preview" />
+        </div>
+      </div>
+
+      <button class="btn-submit" type="submit">เพิ่มเกมใหม่</button>
+    </form>
+  </div>
+</div>

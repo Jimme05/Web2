@@ -1,0 +1,127 @@
+.container {
+  display: flex;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+.user-manage-box {
+  background: white;
+  width: 85%;
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.title {
+  font-size: 1.8rem;
+  text-align: center;
+  margin-bottom: 30px;
+  color: #333;
+  font-weight: 700;
+}
+
+/* รายการผู้ใช้ */
+.user-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  justify-content: flex-start;
+}
+
+.user-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 700px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s;
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(106, 99, 210, 0.2);
+  }
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.user-avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(106, 99, 210, 0.3);
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .avatar-placeholder {
+    background: linear-gradient(135deg, #6a63d2, #8a78e2);
+    color: white;
+    font-size: 1.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+  }
+}
+
+.user-details {
+  .user-name {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 0.3rem;
+  }
+
+  .user-email {
+    font-size: 0.9rem;
+    color: #777;
+    margin-bottom: 0.3rem;
+  }
+
+  .user-balance {
+    font-size: 0.9rem;
+    color: #4e4ec8;
+    font-weight: 600;
+  }
+}
+
+.btn-history {
+  background: #4e4ec8;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: 0.2s;
+
+  &:hover {
+    background: #5f58e3;
+  }
+}
+
+/* Empty state */
+.empty-state {
+  text-align: center;
+  margin-top: 3rem;
+  color: #777;
+
+  .empty-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.6;
+  }
+}

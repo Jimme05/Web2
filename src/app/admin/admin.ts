@@ -1,12 +1,15 @@
 import { Component } from '@angular/core';
+import { AdminNavbar } from "../admin-navbar/admin-navbar";
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
   selector: 'app-admin',
-  imports: [],
+  imports: [AdminNavbar, RouterLink, RouterLinkActive],
   templateUrl: './admin.html',
   styleUrl: './admin.scss'
 })
 export class Admin {
+  constructor(private router: Router) {}
   totalGames = 10;
   totalUsers = 2;
   totalSales = 0;
@@ -19,4 +22,15 @@ export class Admin {
     { rank: 4, name: 'Combat Elite', sold: 1500 },
     { rank: 5, name: 'Fantasy Quest', sold: 1200 }
   ];
+  goToDashboard() {
+    this.router.navigate(['/admin']);
+  }
+
+  goToManageGames() {
+    this.router.navigate(['/admin/games']);
+  }
+
+  goToUsers() {
+    this.router.navigate(['/admin/users']);
+  }
 }
