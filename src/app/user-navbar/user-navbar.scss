@@ -1,0 +1,101 @@
+.navbar {
+  background: #f9f9ff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 60px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  color: #4e4ec8;
+  font-size: 1.3rem;
+  cursor: pointer;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.nav-btn,
+.nav-btn-outline {
+  border-radius: 20px;
+  padding: 6px 16px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: 0.25s;
+  font-weight: 500;
+}
+
+/* ปุ่มหลัก */
+.nav-btn {
+  background: #6a63d2;
+  color: white;
+  border: none;
+
+  &.active {
+    background: #5b54c5;
+    box-shadow: 0 4px 10px rgba(106, 99, 210, 0.3);
+  }
+
+  &:hover {
+    opacity: 0.9;
+  }
+}
+
+/* ปุ่มขอบ */
+.nav-btn-outline {
+  background: none;
+  border: 1px solid #6a63d2;
+  color: #6a63d2;
+
+  &:hover {
+    background: #6a63d2;
+    color: #fff;
+  }
+
+  &.active {
+    background: #6a63d2;
+    color: #fff;
+    box-shadow: 0 4px 10px rgba(106, 99, 210, 0.25);
+  }
+}
+/* ปุ่ม active ของ routerLinkActive */
+button.active {
+  background: #6a63d2 !important;
+  color: white !important;
+  border: 1px solid #6a63d2 !important;
+  box-shadow: 0 4px 10px rgba(106, 99, 210, 0.25);
+}
+
+
+/* ยอดเงิน */
+.balance {
+  background: linear-gradient(135deg, #8b80f9, #7169e2);
+  color: white;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.95rem;
+}
+
+/* ปุ่มออกจากระบบ */
+.logout-btn {
+  border: 1px solid #6a63d2;
+  color: #6a63d2;
+  background: none;
+  border-radius: 20px;
+  padding: 6px 16px;
+  cursor: pointer;
+  transition: 0.2s;
+
+  &:hover {
+    background: #6a63d2;
+    color: white;
+  }
+}

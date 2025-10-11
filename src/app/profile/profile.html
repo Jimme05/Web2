@@ -1,48 +1,12 @@
-<nav class="navbar">
-  <div class="logo">
-    <span>🎮</span>
-    GameShop
-  </div>
-
-  <div class="nav-links">
-    <!-- ปุ่มร้านค้า -->
-    <button class="nav-btn" routerLink="/home" routerLinkActive="active">
-      ร้านค้า
-    </button>
-
-    <!-- ปุ่มคลังเกม -->
-    <button class="nav-btn-outline" routerLink="/library" routerLinkActive="active">
-      คลังเกม
-    </button>
-
-    <!-- ปุ่มโปรไฟล์ -->
-    <button class="nav-btn-outline" routerLink="/profile" routerLinkActive="active">
-      โปรไฟล์
-    </button>
-
-    <!-- ปุ่มตะกร้า -->
-    <button class="nav-btn-outline" routerLink="/cart" routerLinkActive="active">
-      ตะกร้า (0)
-    </button>
-
-    <!-- ยอดเงิน -->
-    <div class="balance">
-      💰 ฿{{ formatCurrency(walletBalance) }}
-    </div>
-
-    <!-- ออกจากระบบ -->
-    <button class="logout-btn" (click)="logout()">ออกจากระบบ</button>
-  </div>
-</nav>
+<app-user-navbar [balance]="balance"></app-user-navbar>
 
 <div class="profile-container">
   <!-- 👤 Profile Header -->
   <div class="profile-header">
     <div class="profile-info">
       <div class="profile-avatar">
-       <img *ngIf="currentUser?.profileImage"
-     [src]="imageUrl(currentUser?.profileImage)"
-     alt="Profile" class="avatar-img">
+        <img *ngIf="currentUser?.profileImage" [src]="imageUrl(currentUser?.profileImage)" alt="Profile"
+          class="avatar-img">
 
         <div *ngIf="!currentUser?.profileImage" class="avatar-placeholder">👤</div>
       </div>
@@ -130,7 +94,7 @@
       <!-- Transaction List -->
       <div class="transaction-list" *ngIf="filteredTransactions.length > 0">
         <div class="transaction-item" [ngClass]="getTransactionClass(transaction.type)"
-             *ngFor="let transaction of filteredTransactions">
+          *ngFor="let transaction of filteredTransactions">
           <div class="transaction-icon">
             {{ getTransactionIcon(transaction.type) }}
           </div>
@@ -180,8 +144,8 @@
 
       <!-- Quick Amount Buttons -->
       <div class="quick-amounts">
-        <button *ngFor="let amount of quickAmounts" class="amount-btn"
-                [class.selected]="selectedAmount === amount" (click)="selectQuickAmount(amount)">
+        <button *ngFor="let amount of quickAmounts" class="amount-btn" [class.selected]="selectedAmount === amount"
+          (click)="selectQuickAmount(amount)">
           <span class="amount-icon">💵</span>
           <span class="amount-text">฿{{ formatCurrency(amount) }}</span>
         </button>
@@ -192,8 +156,8 @@
         <label for="customAmount">หรือกรอกจำนวนเงินเอง</label>
         <div class="custom-input-wrapper">
           <span class="currency-symbol">฿</span>
-          <input type="number" id="customAmount" [(ngModel)]="customAmount"
-                 (ngModelChange)="onCustomAmountChange()" placeholder="0" min="1">
+          <input type="number" id="customAmount" [(ngModel)]="customAmount" (ngModelChange)="onCustomAmountChange()"
+            placeholder="0" min="1">
         </div>
       </div>
 

@@ -1,0 +1,163 @@
+.cart-container {
+  display: flex;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+.cart-box {
+  background: white;
+  width: 85%;
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.cart-title {
+  text-align: center;
+  font-size: 1.8rem;
+  margin-bottom: 25px;
+  color: #333;
+}
+
+/* 🧩 สินค้าในตะกร้า */
+.cart-item {
+  display: flex;
+  align-items: center;
+  background: #fafafa;
+  border-radius: 15px;
+  padding: 15px;
+  margin-bottom: 15px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+
+  .item-img {
+    width: 70px;
+    height: 70px;
+    border-radius: 12px;
+    object-fit: cover;
+    margin-right: 15px;
+  }
+
+  .item-info {
+    flex: 1;
+    h3 {
+      margin: 0;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #222;
+    }
+
+    .price {
+      color: #e53935;
+      font-weight: 600;
+      margin-top: 4px;
+    }
+  }
+
+  .btn-remove {
+    background: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 14px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.25s;
+    &:hover {
+      background: #c0392b;
+      transform: scale(1.05);
+    }
+  }
+}
+
+/* 🧾 ส่วนใส่โค้ดส่วนลด */
+.discount-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 25px;
+  gap: 10px;
+
+  input {
+    flex: 1;
+    max-width: 300px;
+    padding: 10px 14px;
+    border-radius: 12px;
+    border: 1px solid #ccc;
+    font-size: 0.95rem;
+  }
+
+  .btn-apply {
+    background: #2e8b57;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: 0.3s;
+    font-weight: 600;
+
+    &:hover {
+      background: #3fa76a;
+    }
+  }
+}
+
+/* 💰 สรุปราคา */
+.summary {
+  margin-top: 25px;
+  text-align: right;
+  font-size: 1rem;
+  color: #444;
+
+  h3 {
+    margin-top: 8px;
+    font-size: 1.2rem;
+    span {
+      color: #e53935;
+      font-weight: bold;
+    }
+  }
+}
+
+/* 💵 ปุ่มชำระเงิน */
+.btn-pay {
+  width: 100%;
+  background: #2e8b57;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 12px 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin-top: 25px;
+  cursor: pointer;
+  transition: 0.3s;
+
+  &:hover {
+    background: #3fa76a;
+    transform: translateY(-2px);
+  }
+}
+
+/* 🕳️ ถ้าตะกร้าว่าง */
+.empty {
+  text-align: center;
+  color: #888;
+  font-size: 1.1rem;
+  margin-top: 50px;
+}
+
+/* 📱 Responsive */
+@media (max-width: 768px) {
+  .cart-box {
+    width: 95%;
+    padding: 25px;
+  }
+
+  .discount-section {
+    flex-direction: column;
+    input {
+      width: 100%;
+    }
+  }
+}

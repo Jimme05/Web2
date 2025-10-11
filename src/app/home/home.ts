@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { UserNavbar } from "../user-navbar/user-navbar";
 
 interface Game {
   id: number;
@@ -12,7 +13,7 @@ interface Game {
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [],
+  imports: [UserNavbar],
   templateUrl: './home.html',
   styleUrl: './home.scss'
 })

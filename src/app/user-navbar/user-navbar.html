@@ -1,0 +1,32 @@
+<!-- 🎮 Navbar -->
+<nav class="navbar">
+    <div class="logo">
+        <span>🎮</span>
+        GameShop
+    </div>
+
+    <div class="nav-links">
+        <button class="nav-btn" routerLink="/home" routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }">
+            ร้านค้า
+        </button>
+
+        <button class="nav-btn-outline" (click)="goToLibrary()" routerLinkActive="active">
+            คลังเกม
+        </button>
+
+        <button class="nav-btn-outline" (click)="goToProfile()" routerLinkActive="active">
+            โปรไฟล์
+        </button>
+
+        <button class="nav-btn-outline" (click)="goToCart()" routerLinkActive="active">
+            ตะกร้า ({{ cartCount }})
+        </button>
+
+        <div class="balance">
+            💰 ฿{{ balance.toFixed(2) }}
+        </div>
+
+        <button class="logout-btn" (click)="logout()">ออกจากระบบ</button>
+    </div>
+</nav>

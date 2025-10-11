@@ -1,0 +1,46 @@
+<!-- 🎮 Navbar -->
+<app-user-navbar [balance]="balance" [cartCount]="cart.length"></app-user-navbar>
+
+<!-- 🛒 หน้าตะกร้า -->
+<div class="cart-container">
+  <div class="cart-box">
+    <h2 class="cart-title">🛒 ตะกร้าสินค้า</h2>
+
+    <!-- ถ้ามีสินค้า -->
+    <div *ngIf="cart.length > 0; else emptyCart">
+      <div class="cart-item" *ngFor="let item of cart">
+        <img [src]="item.image" alt="Game Image" class="item-img" />
+
+        <div class="item-info">
+          <h3>{{ item.title }}</h3>
+          <p class="price">฿{{ item.price.toFixed(2) }}</p>
+        </div>
+
+        <button class="btn-remove" (click)="removeFromCart(item)">ลบ</button>
+      </div>
+
+      <!-- 🔹 ช่องใส่โค้ดส่วนลด -->
+      <div class="discount-section">
+        <input
+          type="text"
+          placeholder="รหัสส่วนลด"
+          [(ngModel)]="discountCode"
+        />
+        <button class="btn-apply" (click)="applyDiscount()">ใช้โค้ด</button>
+      </div>
+
+      <!-- 🔹 สรุปราคา -->
+      <div class="summary">
+        <p>ราคาเต็ม : ฿{{ totalPrice.toFixed(2) }}</p>
+        <h3>รวมทั้งสิ้น : <span>฿{{ finalPrice.toFixed(2) }}</span></h3>
+      </div>
+
+      <button class="btn-pay" (click)="checkout()">ชำระเงิน</button>
+    </div>
+
+    <!-- ถ้าไม่มีสินค้า -->
+    <ng-template #emptyCart>
+      <p class="empty">ไม่มีสินค้าในตะกร้า 😢</p>
+    </ng-template>
+  </div>
+</div>

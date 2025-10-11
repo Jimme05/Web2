@@ -1,28 +1,11 @@
 <!-- 🎮 Navbar -->
-<nav class="navbar">
-    <div class="logo">
-        <span>🎮</span>
-        GameShop
-    </div>
-    <div class="nav-links">
-        <button class="nav-btn active">ร้านค้า</button>
-        <button class="nav-btn-outline">คลังเกม</button>
-        <button class="nav-btn-outline" (click)="goToProfile()">โปรไฟล์</button>
-        <button class="nav-btn-outline">ตะกร้า (0)</button>
+<app-user-navbar [balance]="balance"></app-user-navbar>
 
-        <div class="balance">
-            💰 ฿{{ balance.toFixed(2) }}
-        </div>
-        <button class="logout-btn" (click)="logout()">ออกจากระบบ</button>
-    </div>
-</nav>
-
-<!-- 🛍️ หน้าร้าน -->
+<!-- 🛍️ เนื้อหา -->
 <div class="container">
     <div class="store-box">
         <h2 class="store-title">🎮 ร้านค้าเกม</h2>
 
-        <!-- 🔍 ช่องค้นหา -->
         <div class="search-row">
             <input type="text" placeholder="ค้นหาเกม..." />
             <select>
@@ -31,17 +14,14 @@
             <button class="btn-search">🔍 ค้นหา</button>
         </div>
 
-        <!-- 🎴 การ์ดเกม -->
         <div class="games-grid">
             <div class="game-card" *ngFor="let g of filteredGames">
                 <div class="game-banner">{{ g.title }}</div>
                 <div class="game-info">
                     <h3>{{ g.title }}</h3>
                     <p class="genre">{{ g.genre }}</p>
-                    <p class="price"></p>
-                    <div class="rank">
-                        🏅 อันดับ {{ g.rank }}
-                    </div>
+                    <p class="price">฿{{ g.price }}</p>
+                    <div class="rank">🏅 อันดับ {{ g.rank }}</div>
                     <button class="btn-cart">🛒 เพิ่มลงตะกร้า</button>
                 </div>
             </div>

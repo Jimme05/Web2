@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { ApiService } from '../services/service'; // ✅ import ApiService
 import { environment } from '../services/environment';
+import { UserNavbar } from "../user-navbar/user-navbar";
 
 interface User {
   id: string;
@@ -31,7 +32,7 @@ interface Transaction {
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, FormsModule,RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink, UserNavbar],
   templateUrl: './profile.html',
   styleUrls: ['./profile.scss']
 })
