@@ -58,17 +58,12 @@ export class Profile {
   }
 
   imageUrl(fileName?: string | null): string {
-  if (!fileName) return 'assets/default-game.jpg';
-  
-  // ✅ ถ้าเป็น URL เต็ม (เช่นมี https:// อยู่แล้ว)
-  if (/^https?:\/\//i.test(fileName)) {
+    if (!fileName) return '';
+    if (!/^https?:\/\//i.test(fileName)) {
+      return `http://202.28.34.203:30000/upload/${fileName}`;
+    }
     return fileName;
   }
-
-  // ✅ ใช้ Proxy ผ่าน Netlify (แก้ Mixed Content)
-  return `/upload/${fileName}`;
-}
-
 
   async loadUserData() {
     const userJson = localStorage.getItem('currentUser');
