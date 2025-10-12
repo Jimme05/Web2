@@ -32,11 +32,17 @@
           <p class="price">💰 ฿{{ g.price }}</p>
           <div class="rank">🏅 อันดับ {{ g.rank }}</div>
 
-          <button class="btn-cart"
-        (click)="addToCart(g)"
-        [disabled]="inCart(g.id)">
-  🛒 {{ inCart(g.id) ? 'อยู่ในตะกร้าแล้ว' : 'เพิ่มลงตะกร้า' }}
-</button>
+          <button class="btn-cart" [ngClass]="{
+    'btn-owned': alreadyOwned(g.id),
+    'btn-disabled': inCart(g.id) || alreadyOwned(g.id)
+  }" (click)="addToCart(g)" [disabled]="inCart(g.id) || alreadyOwned(g.id)">
+            🛒
+            {{ alreadyOwned(g.id)
+            ? 'เป็นเจ้าของแล้ว'
+            : inCart(g.id)
+            ? 'อยู่ในตะกร้าแล้ว'
+            : 'เพิ่มลงตะกร้า' }}
+          </button>
         </div>
       </div>
     </div>
@@ -60,10 +66,20 @@
       <p class="genre">🎮 ประเภท: {{ selectedGame.genre }}</p>
       <p class="price">💰 ราคา: ฿{{ selectedGame.price | number }}</p>
       <p class="rank">🏅 อันดับ: {{ selectedGame.rank }}</p>
+      <p class="description">📝 {{ selectedGame.description }}</p> <!-- 🔹 เพิ่ม -->
+      <p class="release">📅 วันที่วางจำหน่าย: {{ selectedGame.releaseDate }}</p> <!-- 🔹 เพิ่ม -->
     </div>
 
-    <button class="btn-add-cart" (click)="addToCart(selectedGame)">
-      🛒 เพิ่มลงตะกร้า
+    <button class="btn-cart" [ngClass]="{
+    'btn-owned': alreadyOwned(selectedGame.id),
+    'btn-disabled': inCart(selectedGame.id) || alreadyOwned(selectedGame.id)
+  }" (click)="addToCart(selectedGame)" [disabled]="inCart(selectedGame.id) || alreadyOwned(selectedGame.id)">
+      🛒
+      {{ alreadyOwned(selectedGame.id)
+      ? 'เป็นเจ้าของแล้ว'
+      : inCart(selectedGame.id)
+      ? 'อยู่ในตะกร้าแล้ว'
+      : 'เพิ่มลงตะกร้า' }}
     </button>
   </div>
 </div>

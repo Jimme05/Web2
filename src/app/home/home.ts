@@ -4,7 +4,6 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { UserNavbar } from "../user-navbar/user-navbar";
 import { ApiService } from '../services/service';
-import { environment } from '../services/environment';
 
 export interface Game {
   id: number;
@@ -12,7 +11,9 @@ export interface Game {
   genre: string;
   price: number;
   rank: number;
-  imagePath?: string; // ชื่อไฟล์รูปจาก backend (ถ้ามี)
+  description?: string;
+  releaseDate?: string;
+  imagePath?: string;
 }
 
 interface CartItem {
@@ -33,33 +34,59 @@ interface CartItem {
 export class Home {
   walletBalance = 0;
   selectedGame: Game | null = null;
-  showDetailModal = false;
-
-  constructor(private router: Router, private api: ApiService) { }
-
+  ownedGameIds: number[] = []; // ✅ เก็บ ID เกมในคลังจริงจาก API
+  cart: CartItem[] = [];
   games: Game[] = [];
+  allGames: Game[] = [];
 
   searchTerm = '';
   selectedGenre = 'ทุกประเภท';
   genres = ['ทุกประเภท', 'RPG', 'Racing', 'Strategy', 'FPS', 'Adventure', 'Action'];
-  allGames: Game[] = []; // เก็บของเดิมไว้ก่อนกรอง
-  cart: CartItem[] = [];
-  cartKey = 'cart:guest'; // เปลี่ยนเป็น cart:<userId> ถ้าล็อกอิน
+
+  cartKey = 'cart:guest';
+
+  constructor(private router: Router, private api: ApiService) {}
 
   async ngOnInit() {
-    // ถ้ามี currentUser เก็บ userId/อีเมลไว้ เปลี่ยน key ให้เฉพาะคน
-    const cu = localStorage.getItem('currentUser');
-    if (cu) {
-      try {
-        const u = JSON.parse(cu);
-        const keyId = u?.id || u?.email || 'guest';
-        this.cartKey = `cart:${keyId}`;
-      } catch { }
-    }
-    this.loadCart();
-
+    await this.initializeUser();
     await this.loadGames();
+    await this.loadOwnedGames(); // ✅ โหลดคลังจริงของผู้ใช้จาก API
   }
+
+  async initializeUser() {
+    const cu = localStorage.getItem('currentUser');
+    if (!cu) return;
+    try {
+      const u = JSON.parse(cu);
+      const keyId = u?.id || u?.email || 'guest';
+      this.cartKey = `cart:${keyId}`;
+      this.walletBalance = u.walletBalance || 0;
+      this.loadCart();
+    } catch {}
+  }
+
+  /** ✅ โหลดคลังเกมของผู้ใช้จาก API */
+  async loadOwnedGames() {
+    const userRaw = localStorage.getItem('currentUser');
+    if (!userRaw) return;
+
+    const user = JSON.parse(userRaw);
+    try {
+      const library = await this.api.getLibraryByEmail(user.email);
+      // สมมติว่า API คืนค่า [{ gameId: 1, ... }]
+      this.ownedGameIds = (library || []).map((g: any) => g.gameId);
+      console.log('🎮 Owned games:', this.ownedGameIds);
+    } catch (err) {
+      console.error('โหลดคลังเกมไม่สำเร็จ', err);
+      this.ownedGameIds = [];
+    }
+  }
+
+  /** ✅ เช็กว่าเกมนี้เคยซื้อแล้วหรือยัง */
+  alreadyOwned(gameId: number): boolean {
+    return this.ownedGameIds.includes(gameId);
+  }
+
   // ===== Cart helpers =====
   loadCart() {
     const raw = localStorage.getItem(this.cartKey);
@@ -74,39 +101,26 @@ export class Home {
     return this.cart.reduce((sum, it) => sum + it.qty, 0);
   }
 
-  get cartTotal(): number {
-    return this.cart.reduce((sum, it) => sum + it.qty * it.price, 0);
-  }
-
-  // เช็คว่าเกมนี้อยู่ในตะกร้าแล้วหรือยัง
   inCart(gameId: number): boolean {
     return this.cart.some(it => it.gameId === gameId);
   }
 
+  /** 🛒 เพิ่มเกมลงตะกร้า */
   addToCart(g: Game) {
-    // ผูก key ตะกร้ากับผู้ใช้ (เหมือนเดิม)
-    const cuRaw = localStorage.getItem('currentUser');
-    let cartKey = 'cart:guest';
-    if (cuRaw) {
-      try {
-        const cu = JSON.parse(cuRaw);
-        const keyId = cu?.id || cu?.email || 'guest';
-        cartKey = `cart:${keyId}`;
-      } catch { }
-    }
-
-    // โหลดตะกร้าเดิม
-    const raw = localStorage.getItem(cartKey);
-    let cart: CartItem[] = raw ? JSON.parse(raw) : [];
-
-    // ❌ ถ้ามีอยู่แล้ว ห้ามเพิ่มซ้ำ
-    const already = cart.find(x => x.gameId === g.id);
-    if (already) {
-      alert(`คุณมี "${g.title}" อยู่ในตะกร้าแล้ว (เพิ่มได้เกมละ 1 ชิ้นเท่านั้น)`);
+    if (this.alreadyOwned(g.id)) {
+      alert(`คุณเป็นเจ้าของ "${g.title}" อยู่แล้ว 🎮`);
       return;
     }
 
-    // ✅ เพิ่มใหม่ 1 ชิ้น
+    const raw = localStorage.getItem(this.cartKey);
+    let cart: CartItem[] = raw ? JSON.parse(raw) : [];
+
+    const already = cart.find(x => x.gameId === g.id);
+    if (already) {
+      alert(`"${g.title}" อยู่ในตะกร้าแล้ว`);
+      return;
+    }
+
     cart.push({
       gameId: g.id,
       title: g.title,
@@ -115,23 +129,20 @@ export class Home {
       imageFileName: g.imagePath ?? null
     });
 
-    localStorage.setItem(cartKey, JSON.stringify(cart));
-
-    // sync state ถ้าเป็นตะกร้าของ key เดียวกัน
-    if (cartKey === this.cartKey) this.cart = cart;
-
+    localStorage.setItem(this.cartKey, JSON.stringify(cart));
+    this.cart = cart;
     alert(`เพิ่ม "${g.title}" ลงตะกร้าแล้ว!`);
   }
 
-
-
+  /** 🎮 โหลดรายการเกมทั้งหมด */
   async loadGames() {
     try {
-      // ✅ ดึงจาก backend ก่อน
       const res = await this.api.getGames();
-      this.allGames = res;
-
-      // ✅ กรองชื่อ + ประเภท
+      this.allGames = res.map((g: any) => ({
+        ...g,
+        description: g.description || 'ไม่มีคำอธิบายสำหรับเกมนี้',
+        releaseDate: g.releaseDate || 'ไม่ระบุวันที่เปิดตัว',
+      }));
       this.applyFilters();
     } catch (err) {
       console.error('โหลดเกมไม่สำเร็จ', err);
@@ -139,10 +150,10 @@ export class Home {
     }
   }
 
+  /** 🔍 ฟิลเตอร์ชื่อ/ประเภท */
   applyFilters() {
     const searchLower = this.searchTerm.toLowerCase().trim();
     const selected = this.selectedGenre;
-
     this.games = this.allGames.filter(g => {
       const matchName = g.title.toLowerCase().includes(searchLower);
       const matchGenre = selected === 'ทุกประเภท' || g.genre === selected;
@@ -150,33 +161,18 @@ export class Home {
     });
   }
 
-  // เรียกตอนพิมพ์ค้นหา
-  onSearchChange() {
-    this.applyFilters();
-  }
-
-  // เมื่อเปลี่ยนประเภท
-  onGenreChange() {
-    this.applyFilters();
-  }
+  onSearchChange() { this.applyFilters(); }
+  onGenreChange() { this.applyFilters(); }
 
   imageUrl(imagePath?: string | null): string {
-    // ถ้า server เก็บไฟล์ไว้ที่ 203 เช่น /upload/<imagePath>
     return `http://202.28.34.203:30000/upload/${imagePath}`;
   }
 
-  // 👤 ไปหน้าโปรไฟล์
-  async goToProfile() {
-    await this.router.navigate(['/profile']);
-  }
-
-  // ✅ เปิดการ์ดรายละเอียด
   showGameDetail(game: Game) {
     this.selectedGame = game;
-    document.body.style.overflow = 'hidden'; // ปิด scroll
+    document.body.style.overflow = 'hidden';
   }
 
-  // ✅ ปิดการ์ด
   closeDetail(event?: MouseEvent) {
     if (event && (event.target as HTMLElement).classList.contains('popup-overlay')) {
       this.selectedGame = null;
@@ -185,7 +181,7 @@ export class Home {
     }
     document.body.style.overflow = 'auto';
   }
-  // 🚪 ออกจากระบบ
+
   logout() {
     localStorage.removeItem('currentUser');
     localStorage.removeItem('cart');
