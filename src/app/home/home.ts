@@ -40,7 +40,7 @@ export class Home {
   searchTerm = '';
   selectedGenre = 'ทุกประเภท';
   genres = ['ทุกประเภท', 'RPG', 'Racing', 'Strategy', 'FPS', 'Adventure', 'Action'];
-
+  allGames: Game[] = []; // เก็บของเดิมไว้ก่อนกรอง
   cart: CartItem[] = [];
 cartKey = 'cart:guest'; // เปลี่ยนเป็น cart:<userId> ถ้าล็อกอิน
 
@@ -127,22 +127,38 @@ removeItem(g: Game) {
 }
 
   async loadGames() {
-  try {
-    this.games = await this.api.getGames(this.searchTerm, this.selectedGenre === 'ทุกประเภท' ? '' : this.selectedGenre);
-  } catch (err) {
-    console.error('โหลดเกมไม่สำเร็จ', err);
-    this.games = [];
-  }
-}
-  
-  // เรียกตอนพิมพ์ค้นหา
-  onSearchChange() {
-    this.loadGames();
+    try {
+      // ✅ ดึงจาก backend ก่อน
+      const res = await this.api.getGames();
+      this.allGames = res;
+
+      // ✅ กรองชื่อ + ประเภท
+      this.applyFilters();
+    } catch (err) {
+      console.error('โหลดเกมไม่สำเร็จ', err);
+      this.games = [];
+    }
   }
 
-  // เรียกตอนเปลี่ยนประเภท
+  applyFilters() {
+    const searchLower = this.searchTerm.toLowerCase().trim();
+    const selected = this.selectedGenre;
+
+    this.games = this.allGames.filter(g => {
+      const matchName = g.title.toLowerCase().includes(searchLower);
+      const matchGenre = selected === 'ทุกประเภท' || g.genre === selected;
+      return matchName && matchGenre;
+    });
+  }
+  
+  // เรียกตอนพิมพ์ค้นหา
+   onSearchChange() {
+    this.applyFilters();
+  }
+
+  // เมื่อเปลี่ยนประเภท
   onGenreChange() {
-    this.loadGames();
+    this.applyFilters();
   }
 
   imageUrl(imagePath?: string | null): string {
@@ -154,6 +170,7 @@ removeItem(g: Game) {
   async goToProfile() {
     await this.router.navigate(['/profile']);
   }
+  
 
   // 🚪 ออกจากระบบ
   logout() {

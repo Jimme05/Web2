@@ -1,22 +1,26 @@
-<!-- 🎮 Navbar -->
 <app-user-navbar [balance]="balance" [cartCount]="cartCount"></app-user-navbar>
 
-<!-- 🕹️ คลังเกม -->
 <div class="library-container">
   <div class="library-box">
     <h2 class="library-title">📚 คลังเกม</h2>
     <p class="library-subtitle">คุณมีเกมทั้งหมด {{ ownedGames.length }} เกม</p>
 
-    <div class="games-grid">
+    <div class="games-grid" *ngIf="ownedGames.length > 0; else empty">
       <div class="game-card" *ngFor="let game of ownedGames">
         <img [src]="game.image" alt="{{ game.title }}" class="game-img" />
         <div class="game-info">
           <h3>{{ game.title }}</h3>
-          <p class="genre">{{ game.genre }}</p>
-          <p class="price">฿{{ game.price.toFixed(2) }}</p>
-          <button class="owned-btn" disabled>เป็นเจ้าของแล้ว</button>
+          <p class="genre">🎯 {{ game.genre }}</p>
+          <p class="price">💰 ฿{{ game.price | number:'1.2-2' }}</p>
+          <button class="owned-btn" disabled>✅ เป็นเจ้าของแล้ว</button>
         </div>
       </div>
     </div>
+
+    <ng-template #empty>
+      <div class="empty-state">
+        <p>ยังไม่มีเกมในคลัง 😢</p>
+      </div>
+    </ng-template>
   </div>
 </div>
