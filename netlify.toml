@@ -1,12 +1,13 @@
 [build]
   command = "npm run build -- --configuration=production"
   publish = "dist/angular-webpj/browser"
+  functions = "netlify/functions"
 
 [build.environment]
   NETLIFY_USE_BUILD_BOT_RUNTIME = "false"
   NODE_VERSION = "20"
 
 [[redirects]]
-  from = "/*"
-  to = "/index.html"
+  from = "/upload/*"
+  to = "/.netlify/functions/img-proxy/:splat"
   status = 200
