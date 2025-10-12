@@ -32,6 +32,8 @@ interface CartItem {
 })
 export class Home {
   balance = 5000;
+  selectedGame: Game | null = null;
+  showDetailModal = false;
 
   constructor(private router: Router, private api: ApiService) {}
 
@@ -171,7 +173,21 @@ removeItem(g: Game) {
     await this.router.navigate(['/profile']);
   }
   
+  // ✅ เปิดการ์ดรายละเอียด
+showGameDetail(game: Game) {
+  this.selectedGame = game;
+  document.body.style.overflow = 'hidden'; // ปิด scroll
+}
 
+// ✅ ปิดการ์ด
+closeDetail(event?: MouseEvent) {
+  if (event && (event.target as HTMLElement).classList.contains('popup-overlay')) {
+    this.selectedGame = null;
+  } else if (!event) {
+    this.selectedGame = null;
+  }
+  document.body.style.overflow = 'auto';
+}
   // 🚪 ออกจากระบบ
   logout() {
     localStorage.removeItem('currentUser');

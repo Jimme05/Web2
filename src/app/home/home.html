@@ -8,12 +8,7 @@
 
     <!-- 🔍 แถวค้นหา -->
     <div class="search-row">
-      <input
-        type="text"
-        placeholder="ค้นหาเกม..."
-        [(ngModel)]="searchTerm"
-        (ngModelChange)="onSearchChange()"
-      />
+      <input type="text" placeholder="ค้นหาเกม..." [(ngModel)]="searchTerm" (ngModelChange)="onSearchChange()" />
 
       <select [(ngModel)]="selectedGenre" (change)="onGenreChange()">
         <option *ngFor="let genre of genres" [value]="genre">
@@ -26,14 +21,9 @@
 
     <!-- 🎮 รายการเกม -->
     <div class="games-grid">
-      <div class="game-card" *ngFor="let g of games">
-        <!-- ✅ แสดงรูปจาก server 203 -->
+      <div class="game-card" *ngFor="let g of games" (click)="showGameDetail(g)">
         <div class="game-banner">
-          <img
-            [src]="imageUrl(g.imagePath)"
-            alt="{{ g.title }}"
-            class="game-image"
-          />
+          <img [src]="imageUrl(g.imagePath)" alt="{{ g.title }}" class="game-image" />
         </div>
 
         <div class="game-info">
@@ -42,7 +32,9 @@
           <p class="price">💰 ฿{{ g.price }}</p>
           <div class="rank">🏅 อันดับ {{ g.rank }}</div>
 
-          <button class="btn-cart" (click)="addToCart(g)">🛒 เพิ่มลงตะกร้า</button>
+          <button class="btn-cart" (click)="addToCart(g); $event.stopPropagation()">
+            🛒 เพิ่มลงตะกร้า
+          </button>
         </div>
       </div>
     </div>
@@ -51,5 +43,25 @@
     <div class="empty-state" *ngIf="games.length === 0">
       <p>ไม่พบเกมที่ตรงกับคำค้นหา 😢</p>
     </div>
+  </div>
+</div>
+
+<!-- 🎯 การ์ดรายละเอียดเกม -->
+<div class="popup-overlay" *ngIf="selectedGame" (click)="closeDetail($event)">
+  <div class="popup-card" (click)="$event.stopPropagation()">
+    <button class="btn-close" (click)="closeDetail()">✖</button>
+
+    <img [src]="imageUrl(selectedGame.imagePath)" alt="{{ selectedGame.title }}" class="popup-img" />
+
+    <div class="popup-info">
+      <h2>{{ selectedGame.title }}</h2>
+      <p class="genre">🎮 ประเภท: {{ selectedGame.genre }}</p>
+      <p class="price">💰 ราคา: ฿{{ selectedGame.price | number }}</p>
+      <p class="rank">🏅 อันดับ: {{ selectedGame.rank }}</p>
+    </div>
+
+    <button class="btn-add-cart" (click)="addToCart(selectedGame)">
+      🛒 เพิ่มลงตะกร้า
+    </button>
   </div>
 </div>
