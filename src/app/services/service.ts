@@ -135,6 +135,31 @@ export class ApiService {
         : 'assets/no-image.png'
     }));
   }
+  imageUrl(fileName?: string|null) {
+  return fileName ? `http://202.28.34.203:30000/upload/${fileName}` : 'http://202.28.34.203:30000/no-image.png';
+}
+
+  // คลังเกมของผู้ใช้ด้วย userId
+async getLibraryByUserId(userId: number) {
+  const res = await fetch(`${this.baseUrl}/Library/${userId}`);
+  if (!res.ok) throw new Error(await res.text());
+  return res.json(); // UserLibraryItemDto[]
+}
+
+// คลังเกมของผู้ใช้ด้วยอีเมล
+async getLibraryByEmail(email: string) {
+  const res = await fetch(`${this.baseUrl}/Library/by-email?email=${encodeURIComponent(email)}`);
+  if (!res.ok) throw new Error(await res.text());
+  return res.json();
+}
+
+// ตรวจเป็นเจ้าของเกมแล้วหรือยัง
+async hasGame(userId: number, gameId: number) {
+  const res = await fetch(`${this.baseUrl}/Library/has/${userId}/${gameId}`);
+  if (!res.ok) throw new Error(await res.text());
+  return res.json() as Promise<{ owned: boolean }>;
+}
+
 
   async createGame(data: any) {
     const res = await fetch(this.baseUrl + '/Games', {
@@ -175,7 +200,19 @@ export class ApiService {
     if (!res.ok) throw new Error(await res.text());
     return res.json();
   }
+  async getWalletByUserId(userId: number): Promise<{ id: number; userId: number; balance: number }> {
+  const res = await fetch(`${this.baseUrl}/Wallet/${userId}`, {
+    method: 'GET',
+    headers: { 'Accept': 'application/json' }
+  });
 
+  if (!res.ok) {
+    const errText = await res.text();
+    throw new Error(errText || 'ไม่สามารถดึงข้อมูลกระเป๋าเงินได้');
+  }
+
+  return res.json();
+}
 
 
 }
