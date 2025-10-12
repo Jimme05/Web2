@@ -4,13 +4,13 @@ import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AdminNavbar } from '../admin-navbar/admin-navbar';
 import { ApiService } from '../services/service';
-import { environment } from '../services/environment';
+
 
 interface Admin {
   id: string;
   name: string;
   email: string;
-  profileImage?: string;
+  profileImage?: string | null;
   role: string;
   walletBalance: number;
   createdAt: string;
@@ -34,12 +34,27 @@ export class AdminProfile {
     await this.loadAdminData();
   }
 
+  // ======================
+  // 🖼️ ดึง URL ของรูปโปรไฟล์
+  // ======================
   imageUrl(fileName?: string | null): string {
-    if (!fileName) return 'assets/admin-avatar.png';
-    const path = fileName.startsWith('/') ? fileName : `/profile/${fileName}`;
-    return `${environment.apiOrigin}${path}`;
+    if (!fileName) {
+      // ถ้าไม่มีรูปให้ใช้ default avatar
+      return 'assets/admin-avatar.png';
+    }
+
+    // ถ้าเป็น URL เต็มอยู่แล้ว (เช่นเริ่มด้วย http)
+    if (/^https?:\/\//i.test(fileName)) {
+      return fileName;
+    }
+
+    // ✅ ถ้าเป็นชื่อไฟล์ (เช่น abc.jpg) → ใช้จาก 203/upload/
+    return `http://202.28.34.203:30000/upload/${fileName}`;
   }
 
+  // ======================
+  // 👤 โหลดข้อมูลแอดมินจาก backend
+  // ======================
   async loadAdminData() {
     const userJson = localStorage.getItem('currentUser');
     if (!userJson) return;
@@ -51,10 +66,13 @@ export class AdminProfile {
 
       this.currentAdmin = profile;
       this.walletBalance = profile.walletBalance || 0;
+
+      // ✅ ใช้ฟังก์ชัน imageUrl เพื่อดึงรูปจาก 203
       this.profileImageUrl = this.imageUrl(profile.profileImage);
     } catch (err) {
       console.error('โหลดข้อมูลแอดมินไม่สำเร็จ', err);
       this.currentAdmin = user;
+      this.profileImageUrl = this.imageUrl(user.profileImage);
     }
   }
 

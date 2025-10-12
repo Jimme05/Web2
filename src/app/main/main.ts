@@ -27,35 +27,30 @@ export class Main {
   registerEmail = '';
   registerPassword = '';
   registerConfirmPassword = '';
-  registerImage = '';
   registerError = '';
   registerSuccess = '';
   isRegistering = false;
 
   // current user
-  user: { id?: number; email?: string; role?: 'Admin'|'User' } | null = null;
+  user: { id?: number; email?: string; role?: 'Admin' | 'User' } | null = null;
 
-   constructor(private api: ApiService, private router: Router) {}
-   
+  constructor(private api: ApiService, private router: Router) { }
 
-   previewImage: string | null = null;
-selectedFile: File | null = null;
+  // ภาพโปรไฟล์ (upload + preview)
+  previewImage: string | null = null;
+  selectedFile: File | null = null;
 
-onFileSelected(event: Event): void {
-  const input = event.target as HTMLInputElement;
-  if (input.files && input.files.length > 0) {
-    const file = input.files[0];
-    this.selectedFile = file;
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      const file = input.files[0];
+      this.selectedFile = file;
 
-    // แสดง preview
-    const reader = new FileReader();
-    reader.onload = () => {
-      this.previewImage = reader.result as string;
-    };
-    reader.readAsDataURL(file);
+      const reader = new FileReader();
+      reader.onload = () => (this.previewImage = reader.result as string);
+      reader.readAsDataURL(file);
+    }
   }
-}
-
 
   switchTab(tab: 'login' | 'register') {
     this.activeTab = tab;
@@ -74,18 +69,17 @@ onFileSelected(event: Event): void {
       this.loginError = 'กรอกอีเมลและรหัสผ่าน';
       return;
     }
+    if (this.isLoggingIn) return;
+
     this.isLoggingIn = true;
     try {
       const res = await this.api.login(this.loginEmail, this.loginPassword);
-      // res = { id, email, role }
       this.user = res;
-      localStorage.setItem('currentUser', JSON.stringify(res)); // เก็บ session ฝั่ง client
+      localStorage.setItem('currentUser', JSON.stringify(res));
 
-      // เคลียร์ฟอร์ม
       this.loginEmail = '';
       this.loginPassword = '';
 
-      // ✅ เช็ค role แล้วพาไปหน้าเหมาะสม
       if (res.role === 'Admin') {
         this.router.navigate(['/admin']);
       } else {
@@ -99,43 +93,39 @@ onFileSelected(event: Event): void {
   }
 
   // =====================
-  // 📝 REGISTER
+  // 📝 REGISTER (อัปโหลดไป 203 ก่อน แล้วส่งชื่อไฟล์ไป .NET)
   // =====================
   async onRegister() {
-  if (!this.registerUsername || !this.registerEmail || !this.registerPassword) {
-    this.registerError = 'กรอกข้อมูลให้ครบถ้วน';
-    return;
-  }
+    this.registerError = '';
+    this.registerSuccess = '';
 
-  const formData = new FormData();
-  formData.append('name', this.registerUsername);
-  formData.append('email', this.registerEmail);
-  formData.append('password', this.registerPassword);
-  if (this.selectedFile) {
-    formData.append('profileImage', this.selectedFile, this.selectedFile.name);
-  }
+    if (!this.registerUsername || !this.registerEmail || !this.registerPassword) {
+      this.registerError = 'กรอกข้อมูลให้ครบถ้วน';
+      return;
+    }
 
-  try {
-    const res = await fetch('https://8f963cb2b5ea.ngrok-free.app/api/Auth/register', {
-      method: 'POST',
-      body: formData
-    });
-    if (!res.ok) throw new Error(await res.text());
-    this.registerSuccess = 'สมัครสมาชิกสำเร็จ!';
-  } catch (err: any) {
-    this.registerError = err.message;
+    try {
+      const result = await this.api.registerMultipart(
+        this.registerUsername,
+        this.registerEmail,
+        this.registerPassword,
+        this.selectedFile ?? undefined
+      );
+      this.registerSuccess = 'สมัครสมาชิกสำเร็จ!';
+      // เคลียร์ฟอร์มตามต้องการ...
+    } catch (err: any) {
+      this.registerError = err.message || 'สมัครสมาชิกไม่สำเร็จ';
+    }
   }
-}
 
 
   // 🚪 LOGOUT
   logout() {
     this.user = null;
     this.showAuthCard = false;
-    this.router.navigate(['/']); // กลับไปหน้าแรก
+    this.router.navigate(['/']);
   }
 
-  // computed
   get isLoggedIn() {
     return !!this.user;
   }

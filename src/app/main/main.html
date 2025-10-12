@@ -190,16 +190,11 @@
       <span class="label-icon">🖼️</span>
       อัปโหลดรูปโปรไฟล์ <span class="optional-badge">ไม่บังคับ</span>
     </label>
-    <input
-      type="file"
-      id="registerImage"
-      (change)="onFileSelected($event)"
-      accept="image/*"
-    />
+    <input type="file" accept="image/*" (change)="onFileSelected($event)" />
 
     <!-- Preview -->
     <div class="preview-box" *ngIf="previewImage">
-      <img [src]="previewImage" alt="Profile Preview" />
+      <img *ngIf="previewImage" [src]="previewImage" class="preview" />
     </div>
   </div>
 

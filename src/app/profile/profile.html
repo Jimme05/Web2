@@ -7,7 +7,7 @@
       <div class="profile-avatar">
         <img *ngIf="currentUser?.profileImage" [src]="imageUrl(currentUser?.profileImage)" alt="Profile"
           class="avatar-img">
-
+        
         <div *ngIf="!currentUser?.profileImage" class="avatar-placeholder">👤</div>
       </div>
 

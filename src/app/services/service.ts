@@ -7,7 +7,7 @@ import { inject } from '@angular/core';
 })
 export class ApiService {
   private baseUrl = 'https://wepapi-59g1.onrender.com/api'
-  private pho = 'http://202.28.34.203:30000';;
+  private pho = 'http://202.28.34.203:30000';
   constructor(private http: HttpClient) {}
 
 
@@ -21,15 +21,24 @@ export class ApiService {
     return res.json(); // <-- จะได้ { id, email, role }
   }
 
-  async register(Name: string, Email: string, Password: string, profileImage?: string) {
-    const res = await fetch(`${this.baseUrl}/Auth/register`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ Name, Email, Password, profileImage })
-    });
-    if (!res.ok) throw new Error((await res.text()) || 'Register failed');
-    return res.json();
-  }
+  async registerMultipart(name: string, email: string, password: string, file?: File) {
+  const fd = new FormData();
+  // ชื่อ key ต้องตรงกับ DTO (ตัวพิมพ์เล็ก/ใหญ่ไม่ซีเรียส แต่ให้สะอาด ๆ ตามนี้)
+  fd.append('Name', name);
+  fd.append('Email', email);
+  fd.append('Password', password);
+  if (file) fd.append('ProfileImage', file, file.name);
+
+  const res = await fetch(`${this.baseUrl}/Auth/register`, {
+    method: 'POST',
+    body: fd,                 // ❌ ห้ามใส่ headers 'Content-Type'
+    credentials: 'include'    // ถ้ามี cookie
+  });
+  if (!res.ok) throw new Error(await res.text());
+  return res.json();
+}
+
+
 
   async me(email: string) {
     const res = await fetch(`${this.baseUrl}/Auth/me`, {
@@ -129,7 +138,17 @@ export class ApiService {
     return this.http.get(`${this.baseUrl}/Transactions`);
   }
 
-  async getTransactionsByUser(email: string) {
-    return this.http.get(`${this.baseUrl}/Transactions/${email}`);
-  }
+  async getTransactionsByUser(email?: string, userId?: number) {
+  let query = '';
+  if (email) query = `email=${encodeURIComponent(email)}`;
+  else if (userId) query = `userId=${userId}`;
+  else throw new Error('ต้องระบุ email หรือ userId');
+
+  const res = await fetch(`${this.baseUrl}/Transactions/by-user?${query}`);
+  if (!res.ok) throw new Error(await res.text());
+  return res.json();
+}
+
+
+  
 }
