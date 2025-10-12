@@ -10,6 +10,7 @@ import { UserLibrary } from './user-library/user-library';
 import { UserCart } from './user-cart/user-cart';
 import { AdminProfile } from './admin-profile/admin-profile';
 import { AdminEditProfile } from './admin-edit-profile/admin-edit-profile';
+import { UserHistory } from './user-history/user-history';
 
 export const routes: Routes = [
     { path: '', component: Main },
@@ -22,6 +23,7 @@ export const routes: Routes = [
     { path: 'home/user-library', component: UserLibrary },
     { path: 'home/user-cart', component: UserCart },
     { path: 'admin/profile', component: AdminProfile },
-    { path: 'admin/edit-profile', component: AdminEditProfile }
+    { path: 'admin/edit-profile', component: AdminEditProfile },
+    { path: 'admin/user-history/:id', component: UserHistory }
 
 ];

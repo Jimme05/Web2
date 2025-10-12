@@ -1,1 +1,46 @@
-<p>user-history works!</p>
+<app-admin-navbar></app-admin-navbar>
+
+<div class="page-container">
+  <div class="history-header">
+    <h2>📜 ประวัติธุรกรรมของผู้ใช้ (ID: {{ userId }})</h2>
+    <button (click)="goBack()">⬅ กลับ</button>
+  </div>
+
+  <!-- โหลดข้อมูล -->
+  <div *ngIf="loading" class="loading-text">
+    ⏳ กำลังโหลดข้อมูล...
+  </div>
+
+  <!-- ถ้ามีข้อมูล -->
+  <div *ngIf="!loading && transactions.length > 0" class="card-list">
+    <div
+      class="transaction-card"
+      *ngFor="let txn of transactions"
+      [style.border-left-color]="getTransactionColor(txn.type)"
+    >
+      <div class="txn-type">
+        {{ txn.type === 'topup' ? '💰 เติมเงิน' : '🎮 ซื้อเกม' }}
+      </div>
+      <div
+        class="txn-amount"
+        [style.color]="getTransactionColor(txn.type)"
+      >
+        {{ txn.type === 'topup' ? '+' : '-' }}{{ txn.amount | number }}
+        บาท
+      </div>
+
+      <div class="txn-desc">{{ txn.description }}</div>
+      <div class="txn-date">📅 {{ formatDate(txn.createdAt) }}</div>
+
+      <div class="balance-info">
+        💳 ก่อน: {{ txn.balanceBefore | number }}
+        ➜ หลัง: {{ txn.balanceAfter | number }}
+      </div>
+    </div>
+  </div>
+
+  <!-- ถ้าไม่มีข้อมูล -->
+  <div *ngIf="!loading && transactions.length === 0" class="empty-state">
+    ❌ ไม่มีข้อมูลธุรกรรมของผู้ใช้นี้
+  </div>
+</div>
