@@ -8,7 +8,8 @@
         <div class="menu-row">
             <button class="menu-btn" routerLink="/admin/games" routerLinkActive="active">🎮 จัดการเกม</button>
             <button class="menu-btn" routerLink="/admin/users" routerLinkActive="active">👥 จัดการผู้ใช้</button>
-            <button class="menu-btn" routerLink="/admin/discount-codes" routerLinkActive="active">💳 จัดการโค้ดส่วนลด</button>
+            <button class="menu-btn" routerLink="/admin/discount-codes" routerLinkActive="active">💳
+                จัดการโค้ดส่วนลด</button>
             <button class="menu-btn" routerLink="/admin/sales-ranking" routerLinkActive="active">📈 อันดับขาย</button>
         </div>
 
@@ -16,22 +17,22 @@
         <div class="summary-row">
             <div class="summary-card blue">
                 <p>จำนวนเกมทั้งหมด</p>
-
+                <h2>{{ totalGames }}</h2>
             </div>
 
             <div class="summary-card green">
                 <p>จำนวนผู้ใช้</p>
-
+                <h2>{{ totalUsers }}</h2>
             </div>
 
             <div class="summary-card red">
                 <p>ยอดขายรวม</p>
-
+                <h2>{{ totalSales | number }} ฿</h2>
             </div>
 
             <div class="summary-card orange">
                 <p>โค้ดส่วนลดใช้งานได้</p>
-
+                <h2>{{ totalCoupons }}</h2>
             </div>
         </div>
 

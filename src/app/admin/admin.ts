@@ -1,36 +1,50 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AdminNavbar } from "../admin-navbar/admin-navbar";
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { ApiService } from '../services/service';
 
 @Component({
   selector: 'app-admin',
-  imports: [AdminNavbar, RouterLink, RouterLinkActive],
+  standalone: true,
+  imports: [AdminNavbar, RouterLink, RouterLinkActive, CommonModule],
   templateUrl: './admin.html',
   styleUrl: './admin.scss'
 })
-export class Admin {
-  constructor(private router: Router) {}
-  totalGames = 10;
-  totalUsers = 2;
+export class Admin implements OnInit {
+  constructor(private router: Router, private api: ApiService) {}
+
+  totalGames = 0;
+  totalUsers = 0;
   totalSales = 0;
   totalCoupons = 0;
 
-  bestSellers = [
-    { rank: 1, name: 'Cyberpunk Adventure', sold: 2500 },
-    { rank: 2, name: 'Racing Thunder', sold: 2100 },
-    { rank: 3, name: 'Space Strategy', sold: 1800 },
-    { rank: 4, name: 'Combat Elite', sold: 1500 },
-    { rank: 5, name: 'Fantasy Quest', sold: 1200 }
-  ];
-  goToDashboard() {
-    this.router.navigate(['/admin']);
+  bestSellers: any[] = [];
+
+  async ngOnInit() {
+    await this.loadSummary();
   }
 
-  goToManageGames() {
-    this.router.navigate(['/admin/games']);
-  }
+  async loadSummary() {
+    try {
+      // 🟦 โหลดจำนวนเกมทั้งหมด
+      const games = await this.api.getGames();
+      this.totalGames = games.length;
 
-  goToUsers() {
-    this.router.navigate(['/admin/users']);
+
+      // 🟧 (optional) โหลดจำนวนโค้ดส่วนลด
+      this.totalCoupons = 0; // ถ้ายังไม่มี endpoint ก็ใส่ค่า mock ไปก่อน
+
+      // 🏆 โหลดเกมขายดี (สุ่มโชว์)
+      this.bestSellers = games
+        .sort(() => Math.random() - 0.5)
+        .slice(0, 5)
+        .map((g: any) => ({
+          id: g.id,
+          name: g.title,
+        }));
+    } catch (err) {
+      console.error('โหลดข้อมูล Dashboard ไม่สำเร็จ', err);
+    }
   }
 }
