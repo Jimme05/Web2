@@ -135,8 +135,9 @@ export class ApiService {
         : 'assets/no-image.png'
     }));
   }
-  imageUrl(fileName?: string|null) {
-  return fileName ? `http://202.28.34.203:30000/upload/${fileName}` : 'http://202.28.34.203:30000/no-image.png';
+ imageUrl(fileName?: string | null): string {
+  if (!fileName) return 'assets/default.png';
+  return `/upload/${fileName}`; // ✅ Netlify จะ redirect ไปยัง proxy HTTPS ให้อัตโนมัติ
 }
 
   // คลังเกมของผู้ใช้ด้วย userId

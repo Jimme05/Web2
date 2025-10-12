@@ -40,22 +40,25 @@ export class AdminGames implements OnInit {
 
   // ✅ โหลดเกมจาก backend (.NET)
   async loadGames() {
-    try {
-      const res = await this.api.getGames();
-      this.games = res.map((g: any) => ({
-        id: g.id,
-        name: g.title,
-        genre: g.genre,
-        price: g.price,
-        description: g.description,
-        image: g.imagePath
-          ? `http://202.28.34.203:30000/upload/${g.imagePath}`
-          : 'assets/default-game.jpg'
-      }));
-    } catch (err) {
-      console.error('โหลดเกมไม่สำเร็จ', err);
-    }
+  try {
+    const toImg = (p?: string | null) =>
+      !p ? 'assets/default-game.jpg'
+         : (/^https?:\/\//i.test(p) ? p : `/upload/${p}`); // ✅ ไปผ่าน Netlify Function
+
+    const res = await this.api.getGames();
+    this.games = res.map((g: any) => ({
+      id: g.id,
+      title: g.title,               // ✅ ใช้ title ให้ตรงกับ interface/UI
+      genre: g.genre,
+      price: g.price,
+      description: g.description ?? '',
+      image: toImg(g.imagePath)     // ✅ รูปไปที่ /upload/<fileName>
+    }));
+  } catch (err) {
+    console.error('โหลดเกมไม่สำเร็จ', err);
   }
+}
+
 
   // ===========================
   // Modal Control
