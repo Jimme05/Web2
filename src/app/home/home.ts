@@ -31,7 +31,7 @@ interface CartItem {
   styleUrl: './home.scss'
 })
 export class Home {
-  balance = 5000;
+  walletBalance = 0;
   selectedGame: Game | null = null;
   showDetailModal = false;
 
