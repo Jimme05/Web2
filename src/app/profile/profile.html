@@ -1,13 +1,20 @@
-<app-user-navbar [balance]="balance"></app-user-navbar>
+<!-- ✅ Navbar แสดงยอดเงินปัจจุบัน -->
+<app-user-navbar [balance]="walletBalance"></app-user-navbar>
 
 <div class="profile-container">
   <!-- 👤 Profile Header -->
   <div class="profile-header">
     <div class="profile-info">
       <div class="profile-avatar">
-        <img *ngIf="currentUser?.profileImage" [src]="imageUrl(currentUser?.profileImage)" alt="Profile"
-          class="avatar-img">
-        
+        <!-- ถ้ามีรูปโปรไฟล์ -->
+        <img
+          *ngIf="currentUser?.profileImage"
+          [src]="imageUrl(currentUser?.profileImage)"
+          alt="Profile"
+          class="avatar-img"
+        />
+
+        <!-- ถ้าไม่มีรูป -->
         <div *ngIf="!currentUser?.profileImage" class="avatar-placeholder">👤</div>
       </div>
 
@@ -79,22 +86,37 @@
           ประวัติการทำรายการ
         </h3>
         <div class="transaction-filters">
-          <button class="filter-btn" [class.active]="transactionFilter === 'all'" (click)="setFilter('all')">
+          <button
+            class="filter-btn"
+            [class.active]="transactionFilter === 'all'"
+            (click)="setFilter('all')"
+          >
             ทั้งหมด
           </button>
-          <button class="filter-btn" [class.active]="transactionFilter === 'topup'" (click)="setFilter('topup')">
+          <button
+            class="filter-btn"
+            [class.active]="transactionFilter === 'topup'"
+            (click)="setFilter('topup')"
+          >
             💰 เติมเงิน
           </button>
-          <button class="filter-btn" [class.active]="transactionFilter === 'purchase'" (click)="setFilter('purchase')">
+          <button
+            class="filter-btn"
+            [class.active]="transactionFilter === 'purchase'"
+            (click)="setFilter('purchase')"
+          >
             🎮 ซื้อเกม
           </button>
         </div>
       </div>
 
-      <!-- Transaction List -->
+      <!-- 🧾 Transaction List -->
       <div class="transaction-list" *ngIf="filteredTransactions.length > 0">
-        <div class="transaction-item" [ngClass]="getTransactionClass(transaction.type)"
-          *ngFor="let transaction of filteredTransactions">
+        <div
+          class="transaction-item"
+          [ngClass]="getTransactionClass(transaction.type)"
+          *ngFor="let transaction of filteredTransactions"
+        >
           <div class="transaction-icon">
             {{ getTransactionIcon(transaction.type) }}
           </div>
@@ -102,19 +124,28 @@
             <h4 class="transaction-desc">{{ transaction.description }}</h4>
             <p class="transaction-date">{{ formatDate(transaction.createdAt) }}</p>
             <div class="transaction-balance-info">
-              <span class="balance-before">{{ formatCurrency(transaction.balanceBefore) }}</span>
+              <span class="balance-before"
+                >{{ formatCurrency(transaction.balanceBefore) }}</span
+              >
               <span class="arrow">→</span>
-              <span class="balance-after">{{ formatCurrency(transaction.balanceAfter) }}</span>
+              <span class="balance-after"
+                >{{ formatCurrency(transaction.balanceAfter) }}</span
+              >
             </div>
           </div>
-          <div class="transaction-amount" [class.topup]="transaction.type === 'topup'">
-            <span class="amount-sign">{{ transaction.type === 'topup' ? '+' : '-' }}</span>
+          <div
+            class="transaction-amount"
+            [class.topup]="transaction.type === 'topup'"
+          >
+            <span class="amount-sign">{{
+              transaction.type === 'topup' ? '+' : '-'
+            }}</span>
             ฿{{ formatCurrency(transaction.amount) }}
           </div>
         </div>
       </div>
 
-      <!-- Empty State -->
+      <!-- 🕳️ Empty State -->
       <div class="empty-state" *ngIf="filteredTransactions.length === 0">
         <div class="empty-icon">📭</div>
         <h3>ยังไม่มีรายการ</h3>
@@ -125,7 +156,11 @@
 </div>
 
 <!-- 💰 Topup Modal -->
-<div class="modal-overlay" [class.active]="isTopupModalOpen" (click)="closeModalOnOverlay($event)">
+<div
+  class="modal-overlay"
+  [class.active]="isTopupModalOpen"
+  (click)="closeModalOnOverlay($event)"
+>
   <div class="topup-modal" (click)="$event.stopPropagation()">
     <button class="close-btn" (click)="closeTopupModal()">&times;</button>
 
@@ -144,8 +179,12 @@
 
       <!-- Quick Amount Buttons -->
       <div class="quick-amounts">
-        <button *ngFor="let amount of quickAmounts" class="amount-btn" [class.selected]="selectedAmount === amount"
-          (click)="selectQuickAmount(amount)">
+        <button
+          *ngFor="let amount of quickAmounts"
+          class="amount-btn"
+          [class.selected]="selectedAmount === amount"
+          (click)="selectQuickAmount(amount)"
+        >
           <span class="amount-icon">💵</span>
           <span class="amount-text">฿{{ formatCurrency(amount) }}</span>
         </button>
@@ -156,8 +195,14 @@
         <label for="customAmount">หรือกรอกจำนวนเงินเอง</label>
         <div class="custom-input-wrapper">
           <span class="currency-symbol">฿</span>
-          <input type="number" id="customAmount" [(ngModel)]="customAmount" (ngModelChange)="onCustomAmountChange()"
-            placeholder="0" min="1">
+          <input
+            type="number"
+            id="customAmount"
+            [(ngModel)]="customAmount"
+            (ngModelChange)="onCustomAmountChange()"
+            placeholder="0"
+            min="1"
+          />
         </div>
       </div>
 
@@ -170,14 +215,22 @@
         <div class="summary-divider"></div>
         <div class="summary-row total">
           <span>ยอดเงินหลังเติม</span>
-          <span class="summary-value highlight">฿{{ formatCurrency(walletBalance + selectedAmount) }}</span>
+          <span class="summary-value highlight"
+            >฿{{ formatCurrency(walletBalance + selectedAmount) }}</span
+          >
         </div>
       </div>
 
       <!-- Confirm Button -->
-      <button class="btn-confirm" [disabled]="selectedAmount <= 0" (click)="confirmTopup()">
+      <button
+        class="btn-confirm"
+        [disabled]="selectedAmount <= 0"
+        (click)="confirmTopup()"
+      >
         <span class="btn-shine"></span>
-        <span *ngIf="selectedAmount > 0">ยืนยันเติมเงิน ฿{{ formatCurrency(selectedAmount) }}</span>
+        <span *ngIf="selectedAmount > 0"
+          >ยืนยันเติมเงิน ฿{{ formatCurrency(selectedAmount) }}</span
+        >
         <span *ngIf="selectedAmount <= 0">กรุณาเลือกจำนวนเงิน</span>
       </button>
     </div>

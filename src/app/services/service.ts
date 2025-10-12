@@ -8,7 +8,7 @@ import { inject } from '@angular/core';
 export class ApiService {
   private baseUrl = 'https://wepapi-59g1.onrender.com/api'
   private pho = 'http://202.28.34.203:30000';
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
 
   async login(email: string, password: string) {
@@ -22,19 +22,46 @@ export class ApiService {
   }
 
   async registerMultipart(name: string, email: string, password: string, file?: File) {
-  const fd = new FormData();
-  // ชื่อ key ต้องตรงกับ DTO (ตัวพิมพ์เล็ก/ใหญ่ไม่ซีเรียส แต่ให้สะอาด ๆ ตามนี้)
-  fd.append('Name', name);
-  fd.append('Email', email);
-  fd.append('Password', password);
-  if (file) fd.append('ProfileImage', file, file.name);
+    const fd = new FormData();
+    // ชื่อ key ต้องตรงกับ DTO (ตัวพิมพ์เล็ก/ใหญ่ไม่ซีเรียส แต่ให้สะอาด ๆ ตามนี้)
+    fd.append('Name', name);
+    fd.append('Email', email);
+    fd.append('Password', password);
+    if (file) fd.append('ProfileImage', file, file.name);
 
-  const res = await fetch(`${this.baseUrl}/Auth/register`, {
+    const res = await fetch(`${this.baseUrl}/Auth/register`, {
+      method: 'POST',
+      body: fd,                 // ❌ ห้ามใส่ headers 'Content-Type'
+      credentials: 'include'    // ถ้ามี cookie
+    });
+    if (!res.ok) throw new Error(await res.text());
+    return res.json();
+  }
+  async topup(userId: number, amount: number): Promise<any> {
+  const now = new Date().toISOString();
+  
+  const payload = {
+    id: 0,
+    userId,
+    type: 'topup',
+    amount,
+    balanceBefore: 0,   // ให้ backend คำนวณจริงเองได้
+    balanceAfter: 0,
+    description: `เติมเงินจำนวน ${amount} บาท`,
+    createdAt: now
+  };
+
+  const res = await fetch(`${this.baseUrl}/Wallet/topup`, {
     method: 'POST',
-    body: fd,                 // ❌ ห้ามใส่ headers 'Content-Type'
-    credentials: 'include'    // ถ้ามี cookie
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
   });
-  if (!res.ok) throw new Error(await res.text());
+
+  if (!res.ok) {
+    const errText = await res.text();
+    throw new Error(errText || 'Topup failed');
+  }
+
   return res.json();
 }
 
@@ -139,16 +166,16 @@ export class ApiService {
   }
 
   async getTransactionsByUser(email?: string, userId?: number) {
-  let query = '';
-  if (email) query = `email=${encodeURIComponent(email)}`;
-  else if (userId) query = `userId=${userId}`;
-  else throw new Error('ต้องระบุ email หรือ userId');
+    let query = '';
+    if (email) query = `email=${encodeURIComponent(email)}`;
+    else if (userId) query = `userId=${userId}`;
+    else throw new Error('ต้องระบุ email หรือ userId');
 
-  const res = await fetch(`${this.baseUrl}/Transactions/by-user?${query}`);
-  if (!res.ok) throw new Error(await res.text());
-  return res.json();
-}
+    const res = await fetch(`${this.baseUrl}/Transactions/by-user?${query}`);
+    if (!res.ok) throw new Error(await res.text());
+    return res.json();
+  }
 
 
-  
+
 }

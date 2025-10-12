@@ -32,9 +32,11 @@
           <p class="price">💰 ฿{{ g.price }}</p>
           <div class="rank">🏅 อันดับ {{ g.rank }}</div>
 
-          <button class="btn-cart" (click)="addToCart(g); $event.stopPropagation()">
-            🛒 เพิ่มลงตะกร้า
-          </button>
+          <button class="btn-cart"
+        (click)="addToCart(g)"
+        [disabled]="inCart(g.id)">
+  🛒 {{ inCart(g.id) ? 'อยู่ในตะกร้าแล้ว' : 'เพิ่มลงตะกร้า' }}
+</button>
         </div>
       </div>
     </div>
