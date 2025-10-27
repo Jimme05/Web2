@@ -9,5 +9,10 @@
 
 [[redirects]]
   from = "/*"
-  to = "/index.html"
+  to = "/app.html"
+  status = 200
+
+[[redirects]]
+  from = "/upload/*"
+  to = "/.netlify/functions/img-proxy/:splat"
   status = 200
