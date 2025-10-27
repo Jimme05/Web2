@@ -8,6 +8,6 @@
   NODE_VERSION = "20"
 
 [[redirects]]
-  from = "/upload/*"
-  to = "/.netlify/functions/img-proxy/:splat"
+  from = "/*"
+  to = "/index.html"
   status = 200
