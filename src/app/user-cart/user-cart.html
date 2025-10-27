@@ -10,14 +10,14 @@
     <div *ngIf="cart.length > 0; else emptyCart">
       <div class="cart-item" *ngFor="let it of cart">
         <img [src]="imageUrl(it)" alt="Game Image" class="item-img" />
-      
-         
+
+
         <div class="item-info">
           <h3 class="title">{{ it.title }}</h3>
           <div class="qty-row">
-            
+
             <span class="qty">{{ it.qty }}</span>
-           
+
           </div>
 
         </div>
@@ -30,15 +30,18 @@
         <button class="btn-remove" (click)="removeFromCart(it)">ลบ</button>
       </div>
 
-      <!-- 🔹 ช่องใส่โค้ดส่วนลด -->
+      <!-- 🔹 ส่วนเลือกโค้ดส่วนลด -->
       <div class="discount-section">
-        <input
-          type="text"
-          placeholder="รหัสส่วนลด"
-          [(ngModel)]="discountCode"
-        />
-        <button class="btn-apply" (click)="applyDiscount()">ใช้โค้ด</button>
+        <label>🎟️ เลือกรหัสส่วนลด</label>
+        <select [(ngModel)]="selectedCoupon" (change)="applyDiscount()">
+          <option value="">-- ไม่ใช้คูปอง --</option>
+          <option *ngFor="let c of coupons" [ngValue]="c">
+            {{ c.code }}
+            ({{ c.isPercent ? c.amount + '%' : '฿' + c.amount }})
+          </option>
+        </select>
       </div>
+
 
       <!-- 🔹 สรุปราคา -->
       <div class="summary">

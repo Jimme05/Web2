@@ -9,6 +9,7 @@ export class ApiService {
   
   private baseUrl = 'https://wepapi-59g1.onrender.com/api'
   private pho = 'http://202.28.34.203:30000';
+  base: any;
   constructor(private http: HttpClient) { }
 
 
@@ -274,5 +275,43 @@ async getSummary() {
     };
   }
 }
+// ✅ ซื้อเกม (รองรับคูปองส่วนลด)
+  async purchase(
+    userId: number,
+    items: { gameId: number; qty: number }[],
+    couponCode?: string | null
+  ): Promise<{
+    message: string;
+    subtotal: number;
+    discount: number;
+    total: number;
+    coupon?: string | null;
+    purchasedGames: string[];
+    balanceBefore: number;
+    balanceAfter: number;
+    transactionId: number;
+  }> {
+    const body = {
+      userId,
+      items,
+      couponCode: couponCode ?? null // ✅ ต้องใช้ชื่อเดียวกับ backend (.NET)
+    };
+
+    const res = await fetch(`${this.baseUrl}/Wallet/purchase`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+
+    if (!res.ok) {
+      const msg = await res.text();
+      throw new Error(msg || 'ชำระเงินไม่สำเร็จ');
+    }
+
+    return res.json();
+  }
+  
+  
+ 
 
 }

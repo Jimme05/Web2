@@ -8,7 +8,7 @@ interface LibraryItemDto {
   title: string;
   genre: string;
   priceCurrent: number;
-  imagePath?: string | null;   // ชื่อไฟล์รูปจาก DB (เช่น "abc.png")
+  imagePath?: string | null;
   totalQty: number;
   lastPurchasedAt: string;
   totalSpent: number;
@@ -21,7 +21,7 @@ interface OwnedGameVm {
   price: number;
   qty: number;
   purchasedAt: string;
-  image: string;               // URL ที่พร้อมโชว์
+  image: string;
 }
 
 @Component({
@@ -35,8 +35,8 @@ export class UserLibrary implements OnInit {
   balance = 0;
   cartCount = 0;
   ownedGames: OwnedGameVm[] = [];
+  selectedGame: OwnedGameVm | null = null; // ✅ เก็บเกมที่กดเพื่อโชว์ popup
 
-  // base URL รูปที่ 203
   private imgBase = 'http://202.28.34.203:30000';
 
   constructor(private api: ApiService) {}
@@ -47,14 +47,12 @@ export class UserLibrary implements OnInit {
 
   private imageUrl(fileName?: string | null): string {
     if (!fileName) return `${this.imgBase}/no-image.png`;
-    // ถ้าเป็นแค่ชื่อไฟล์ ให้ประกอบ URL
     if (!/^https?:\/\//i.test(fileName)) {
       return `${this.imgBase}/upload/${fileName}`;
     }
     return fileName;
   }
 
-  // ✅ โหลดข้อมูลคลังเกมของ user จาก API
   async loadOwnedGames() {
     const userRaw = localStorage.getItem('currentUser');
     if (!userRaw) {
@@ -66,15 +64,13 @@ export class UserLibrary implements OnInit {
 
     const user = JSON.parse(userRaw) as { id: number; email: string; walletBalance?: number };
 
-    // 1) โหลดยอดเงินล่าสุดจากเส้น /api/Wallet/{userId} (ถ้ามี)
     try {
-      const wallet = await this.api.getLibraryByUserId(user.id); // { id, userId, balance }
+      const wallet = await this.api.getWalletByUserId(user.id);
       this.balance = Number(wallet?.balance ?? user.walletBalance ?? 0);
     } catch {
       this.balance = Number(user.walletBalance ?? 0);
     }
 
-    // 2) โหลดตะกร้า เพื่อแสดงจำนวนบน Navbar
     const cartKey = `cart:${user.id || user.email || 'guest'}`;
     try {
       const raw = localStorage.getItem(cartKey);
@@ -84,7 +80,6 @@ export class UserLibrary implements OnInit {
       this.cartCount = 0;
     }
 
-    // 3) โหลด “คลังเกม” จากเส้น /api/Library/by-email
     try {
       const list = await this.api.getLibraryByEmail(user.email) as LibraryItemDto[];
       this.ownedGames = (list || []).map(it => ({
@@ -100,5 +95,16 @@ export class UserLibrary implements OnInit {
       console.error('โหลดคลังเกมไม่สำเร็จ', err);
       this.ownedGames = [];
     }
+  }
+
+  // ✅ เปิด popup รายละเอียด
+  showGameDetail(game: OwnedGameVm) {
+    this.selectedGame = game;
+  }
+
+  // ✅ ปิด popup รายละเอียด
+  closeDetail(event?: Event) {
+    if (event) event.stopPropagation();
+    this.selectedGame = null;
   }
 }

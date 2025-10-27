@@ -13,16 +13,20 @@ import { DiscountService, DiscountCodeModel } from '../services/discount.service
 })
 export class AdminDiscountCodes implements OnInit {
   // ฟอร์ม
-  couponName = '';           // ชื่อโค้ด เช่น SAVE10
-  discountPercent = 5;       // ค่า "amount" ถ้า isPercent = true
-  usageLimit: number | null = 1;  // maxUses (รวมทุกคน)
-  isPercent = false;          // true = ส่วนลดเป็น %, false = ลดเป็นจำนวนเงิน
+  couponName = '';
+  discountPercent = 5;
+  usageLimit: number | null = 1;
+  perUserLimit: number | null = 1; // ✅ เพิ่มใหม่
+  isPercent = false;
   minOrderAmount: number | null = null;
-  startAt: string | null = null;  // ISO string เช่น '2025-10-28T00:00:00Z'
+  startAt: string | null = null;
   endAt: string | null = null;
   isActive = true;
-
   loading = false;
+
+  // สถานะแก้ไข
+  editing = false;
+  editingId: number | null = null;
 
   // รายการคูปอง
   coupons: DiscountCodeModel[] = [];
@@ -42,7 +46,8 @@ export class AdminDiscountCodes implements OnInit {
     }
   }
 
-  async createCoupon(): Promise<void> {
+  // ✅ สร้างหรืออัปเดตคูปอง
+  async saveCoupon(): Promise<void> {
     if (!this.couponName.trim()) {
       alert('กรุณากรอกชื่อโค้ด');
       return;
@@ -54,35 +59,87 @@ export class AdminDiscountCodes implements OnInit {
 
     this.loading = true;
     try {
-      await this.discounts.createDiscount({
-        code: this.couponName.trim().toUpperCase(), // normalize เป็นพิมพ์ใหญ่
-        amount: this.discountPercent,
-        isPercent: this.isPercent,
-        maxUses: this.usageLimit ?? null,
-        perUserLimit: null,
-        minOrderAmount: this.minOrderAmount,
-        startAt: this.startAt,
-        endAt: this.endAt,
-        isActive: this.isActive
-      });
+      if (this.editing && this.editingId) {
+        // 🟡 แก้ไขคูปอง
+        await this.discounts.updateDiscount(this.editingId, {
+          amount: this.discountPercent,
+          isPercent: this.isPercent,
+          maxUses: this.usageLimit,
+          perUserLimit: this.perUserLimit, // ✅ ส่งเพิ่ม
+          minOrderAmount: this.minOrderAmount,
+          startAt: this.startAt,
+          endAt: this.endAt,
+          isActive: this.isActive
+        });
+        alert('✅ แก้ไขคูปองสำเร็จ');
+      } else {
+        // 🟢 สร้างใหม่
+        await this.discounts.createDiscount({
+          code: this.couponName.trim().toUpperCase(),
+          amount: this.discountPercent,
+          isPercent: this.isPercent,
+          maxUses: this.usageLimit,
+          perUserLimit: this.perUserLimit, // ✅ ส่งเพิ่ม
+          minOrderAmount: this.minOrderAmount,
+          startAt: this.startAt,
+          endAt: this.endAt,
+          isActive: this.isActive
+        });
+        alert('✅ สร้างคูปองสำเร็จ');
+      }
 
-      alert('✅ สร้างคูปองสำเร็จ');
-      // รีเซ็ตฟอร์มบางช่อง
-      this.couponName = '';
-      this.discountPercent = 5;
-      this.usageLimit = 1;
-      this.isPercent = true;
-      this.minOrderAmount = null;
-      this.startAt = null;
-      this.endAt = null;
-      this.isActive = true;
-
+      this.resetForm();
       await this.loadCoupons();
     } catch (err: any) {
       console.error('Error:', err);
-      alert(err?.message || '❌ ไม่สามารถสร้างคูปองได้');
+      alert(err?.message || '❌ ไม่สามารถบันทึกคูปองได้');
     } finally {
       this.loading = false;
     }
+  }
+
+  editCoupon(c: DiscountCodeModel) {
+    this.editing = true;
+    this.editingId = c.id;
+    this.couponName = c.code;
+    this.discountPercent = c.amount;
+    this.isPercent = c.isPercent;
+    this.usageLimit = c.maxUses ?? null;
+    this.perUserLimit = c.perUserLimit ?? null; // ✅ โหลดเข้าฟอร์ม
+    this.minOrderAmount = c.minOrderAmount ?? null;
+    this.startAt = c.startAt ?? null;
+    this.endAt = c.endAt ?? null;
+    this.isActive = c.isActive;
+  }
+
+  cancelEdit() {
+    this.resetForm();
+  }
+
+  async deleteCoupon(c: DiscountCodeModel) {
+    if (!confirm(`ต้องการลบคูปอง "${c.code}" ใช่หรือไม่?`)) return;
+
+    try {
+      await this.discounts.deleteDiscount(c.id);
+      alert('🗑️ ลบคูปองสำเร็จ');
+      await this.loadCoupons();
+    } catch (err) {
+      console.error('ลบไม่สำเร็จ:', err);
+      alert('❌ ไม่สามารถลบคูปองได้');
+    }
+  }
+
+  private resetForm() {
+    this.couponName = '';
+    this.discountPercent = 5;
+    this.usageLimit = 1;
+    this.perUserLimit = 1;
+    this.isPercent = false;
+    this.minOrderAmount = null;
+    this.startAt = null;
+    this.endAt = null;
+    this.isActive = true;
+    this.editing = false;
+    this.editingId = null;
   }
 }

@@ -1,3 +1,4 @@
+<!-- 🎮 Navbar -->
 <app-user-navbar [balance]="balance" [cartCount]="cartCount"></app-user-navbar>
 
 <div class="library-container">
@@ -6,7 +7,7 @@
     <p class="library-subtitle">คุณมีเกมทั้งหมด {{ ownedGames.length }} เกม</p>
 
     <div class="games-grid" *ngIf="ownedGames.length > 0; else empty">
-      <div class="game-card" *ngFor="let game of ownedGames">
+      <div class="game-card" *ngFor="let game of ownedGames" (click)="showGameDetail(game)">
         <img [src]="game.image" alt="{{ game.title }}" class="game-img" />
         <div class="game-info">
           <h3>{{ game.title }}</h3>
@@ -22,5 +23,24 @@
         <p>ยังไม่มีเกมในคลัง 😢</p>
       </div>
     </ng-template>
+  </div>
+</div>
+
+<!-- 🪄 Popup รายละเอียดเกม -->
+<div class="popup-overlay" *ngIf="selectedGame" (click)="closeDetail($event)">
+  <div class="popup-card" (click)="$event.stopPropagation()">
+    <button class="btn-close" (click)="closeDetail()">✖</button>
+
+    <img [src]="selectedGame.image" alt="{{ selectedGame.title }}" class="popup-img" />
+
+    <div class="popup-info">
+      <h2>{{ selectedGame.title }}</h2>
+      <p class="genre">🎮 ประเภท: {{ selectedGame.genre }}</p>
+      <p class="price">💰 ราคา: ฿{{ selectedGame.price | number }}</p>
+      <p class="date">🗓️ วันที่ซื้อ: {{ selectedGame.purchasedAt | date:'medium' }}</p>
+      <p class="qty">🧩 จำนวน: {{ selectedGame.qty }}</p>
+    </div>
+
+    <button class="owned-btn" disabled>✅ เป็นเจ้าของแล้ว</button>
   </div>
 </div>

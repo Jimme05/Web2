@@ -119,4 +119,22 @@ export class DiscountService {
     });
     return this.json<PurchaseResult>(res);
   }
+   // ✅ ลบคูปอง
+  async deleteDiscount(id: number): Promise<void> {
+    const res = await fetch(`${this.base}/api/DiscountCodes/${id}`, {
+      method: 'DELETE'
+    });
+    if (!res.ok) throw new Error(await res.text());
+  }
+
+  // ✅ อัปเดตคูปอง
+  async updateDiscount(id: number, dto: any): Promise<void> {
+    const res = await fetch(`${this.base}/api/DiscountCodes/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(dto)
+    });
+    if (!res.ok) throw new Error(await res.text());
+  }
+
 }

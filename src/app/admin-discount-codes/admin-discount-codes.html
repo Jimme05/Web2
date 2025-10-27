@@ -2,9 +2,12 @@
 
 <div class="container">
   <div class="dashboard-box">
-    <h2 class="dashboard-title">💳 สร้างคูปองส่วนลด</h2>
+    <h2 class="dashboard-title">
+      💳 {{ editing ? 'แก้ไขคูปองส่วนลด' : 'สร้างคูปองส่วนลด' }}
+    </h2>
 
-    <form class="coupon-form" (ngSubmit)="createCoupon()">
+    <form class="coupon-form" (ngSubmit)="saveCoupon()">
+      <!-- 🪪 ชื่อคูปอง -->
       <div class="form-group">
         <label>🪪 ชื่อคูปอง</label>
         <input
@@ -13,9 +16,11 @@
           [(ngModel)]="couponName"
           name="couponName"
           required
+          [readonly]="editing"
         />
       </div>
 
+      <!-- 🎯 จำนวนครั้งรวมทั้งหมด -->
       <div class="form-group">
         <label>🎯 จำนวนครั้งที่ใช้ได้ (รวมทุกคน)</label>
         <input
@@ -28,6 +33,19 @@
         />
       </div>
 
+      <!-- 👤 จำกัดจำนวนครั้งต่อผู้ใช้ -->
+      <div class="form-group">
+        <label>👤 จำกัดจำนวนครั้งต่อผู้ใช้ (เช่น 1 = ใช้ได้ 1 ครั้ง/บัญชี)</label>
+        <input
+          type="number"
+          min="1"
+          placeholder="1"
+          [(ngModel)]="perUserLimit"
+          name="perUserLimit"
+        />
+      </div>
+
+      <!-- 💰 ส่วนลด -->
       <div class="form-group">
         <label>💰 ส่วนลด</label>
         <div class="inline">
@@ -48,10 +66,20 @@
       </div>
 
       <button class="btn-create" type="submit" [disabled]="loading">
-        {{ loading ? 'กำลังบันทึก...' : 'สร้างคูปอง' }}
+        {{ loading ? 'กำลังบันทึก...' : (editing ? 'บันทึกการแก้ไข' : 'สร้างคูปอง') }}
+      </button>
+
+      <button
+        *ngIf="editing"
+        type="button"
+        class="btn-cancel"
+        (click)="cancelEdit()"
+      >
+        ❌ ยกเลิกการแก้ไข
       </button>
     </form>
 
+    <!-- 🔹 รายการคูปอง -->
     <h3 class="sub-title">🎟️ รายการคูปองส่วนลด</h3>
 
     <div class="coupon-list" *ngIf="coupons.length > 0; else emptyCoupon">
@@ -65,14 +93,21 @@
             </strong>
             |
             ใช้ไปแล้ว: {{ c.usedCount || 0 }}
-            /
-            {{ c.maxUses ?? '∞' }}
+            / {{ c.maxUses ?? '∞' }}
           </p>
+          <p>จำกัดต่อผู้ใช้: {{ c.perUserLimit ?? 'ไม่จำกัด' }}</p>
           <p class="dates">
             ช่วงเวลา:
             {{ c.startAt || '-' }} → {{ c.endAt || '-' }}
           </p>
-          <p *ngIf="c.minOrderAmount">ยอดสั่งซื้อขั้นต่ำ: ฿{{ c.minOrderAmount }}</p>
+          <p *ngIf="c.minOrderAmount">
+            ยอดสั่งซื้อขั้นต่ำ: ฿{{ c.minOrderAmount }}
+          </p>
+        </div>
+
+        <div class="actions">
+          <button class="btn-edit" (click)="editCoupon(c)">✏️ แก้ไข</button>
+          <button class="btn-delete" (click)="deleteCoupon(c)">🗑️ ลบ</button>
         </div>
 
         <span class="status" [class.active]="c.isActive">

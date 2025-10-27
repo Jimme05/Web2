@@ -1,0 +1,14 @@
+<div class="detail-container" *ngIf="game; else notfound">
+  <img [src]="game.imageUrl" alt="{{ game.title }}" class="detail-img" />
+  <div class="detail-info">
+    <h2>{{ game.title }}</h2>
+    <p><strong>แนวเกม:</strong> {{ game.genre }}</p>
+    <p><strong>ราคา:</strong> ฿{{ game.price | number:'1.2-2' }}</p>
+    <p><strong>คำอธิบาย:</strong> {{ game.description }}</p>
+    <p><strong>วันที่อัปโหลด:</strong> {{ game.createdAt | date:'medium' }}</p>
+  </div>
+</div>
+
+<ng-template #notfound>
+  <p>❌ ไม่พบข้อมูลเกมนี้</p>
+</ng-template>

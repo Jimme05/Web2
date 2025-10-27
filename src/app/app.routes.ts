@@ -12,6 +12,7 @@ import { AdminProfile } from './admin-profile/admin-profile';
 import { AdminEditProfile } from './admin-edit-profile/admin-edit-profile';
 import { UserHistory } from './user-history/user-history';
 import { AdminDiscountCodes } from './admin-discount-codes/admin-discount-codes';
+import { UserGameDetail } from './user-game-detail/user-game-detail';
 
 export const routes: Routes = [
      { path: '', redirectTo: 'main', pathMatch: 'full' },
@@ -27,6 +28,7 @@ export const routes: Routes = [
     { path: 'admin/profile', component: AdminProfile },
     { path: 'admin/edit-profile', component: AdminEditProfile },
     { path: 'admin/user-history/:id', component: UserHistory },
-    { path: 'admin/discount-codes', component: AdminDiscountCodes }
+    { path: 'admin/discount-codes', component: AdminDiscountCodes },
+    { path: 'game/:id', component: UserGameDetail }
 
 ];
