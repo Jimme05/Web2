@@ -136,9 +136,11 @@ export class ApiService {
         : 'assets/no-image.png'
     }));
   }
- imageUrl(fileName?: string | null): string {
-  if (!fileName) return 'assets/default.png';
-  return `/upload/${fileName}`; // ✅ Netlify จะ redirect ไปยัง proxy HTTPS ให้อัตโนมัติ
+ imageUrl(file?: string | null): string {
+  if (!file) return 'assets/default.png';
+  return `https://wepapi-59g1.onrender.com/api/Images/proxy/upload/${encodeURIComponent(file)}`;
+  // หรือถ้าทำ action แบบ ?path=
+  // return `https://<your-render-api>.onrender.com/api/Images/proxy?path=/upload/${encodeURIComponent(file)}`;
 }
 
   // คลังเกมของผู้ใช้ด้วย userId
