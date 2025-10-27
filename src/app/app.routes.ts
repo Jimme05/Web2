@@ -14,7 +14,8 @@ import { UserHistory } from './user-history/user-history';
 import { AdminDiscountCodes } from './admin-discount-codes/admin-discount-codes';
 
 export const routes: Routes = [
-    { path: '', component: Main },
+     { path: '', redirectTo: 'main', pathMatch: 'full' },
+    { path: 'main', component: Main },
     { path: 'admin', component: Admin },
     { path: 'home', component: Home },
     { path: 'profile', component : Profile},
