@@ -17,7 +17,7 @@
       </div>
 
       <div class="form-group">
-        <label>🎯 จำนวนครั้งที่ใช้ได้</label>
+        <label>🎯 จำนวนครั้งที่ใช้ได้ (รวมทุกคน)</label>
         <input
           type="number"
           min="1"
@@ -29,16 +29,22 @@
       </div>
 
       <div class="form-group">
-        <label>💰 ส่วนลด (%)</label>
-        <input
-          type="number"
-          min="1"
-          max="100"
-          placeholder="เช่น 15"
-          [(ngModel)]="discountPercent"
-          name="discountPercent"
-          required
-        />
+        <label>💰 ส่วนลด</label>
+        <div class="inline">
+          <input
+            type="number"
+            min="1"
+            [max]="isPercent ? 100 : null"
+            placeholder="เช่น 15"
+            [(ngModel)]="discountPercent"
+            name="discountPercent"
+            required
+          />
+          <label class="toggle">
+            <input type="checkbox" [(ngModel)]="isPercent" name="isPercent" />
+            <span>{{ isPercent ? '% เปอร์เซ็นต์' : '฿ จำนวนเงิน' }}</span>
+          </label>
+        </div>
       </div>
 
       <button class="btn-create" type="submit" [disabled]="loading">
@@ -52,10 +58,25 @@
       <div class="coupon-item" *ngFor="let c of coupons">
         <div>
           <h4>{{ c.code }}</h4>
-          <p>ส่วนลด: {{ c.discount }}% | ใช้ได้อีก {{ c.usageLimit }} ครั้ง</p>
+          <p>
+            ส่วนลด:
+            <strong>
+              {{ c.isPercent ? (c.amount + '%') : ('฿' + c.amount) }}
+            </strong>
+            |
+            ใช้ไปแล้ว: {{ c.usedCount || 0 }}
+            /
+            {{ c.maxUses ?? '∞' }}
+          </p>
+          <p class="dates">
+            ช่วงเวลา:
+            {{ c.startAt || '-' }} → {{ c.endAt || '-' }}
+          </p>
+          <p *ngIf="c.minOrderAmount">ยอดสั่งซื้อขั้นต่ำ: ฿{{ c.minOrderAmount }}</p>
         </div>
-        <span class="status" [class.active]="c.active">
-          {{ c.active ? 'ใช้งานอยู่' : 'หมดอายุ' }}
+
+        <span class="status" [class.active]="c.isActive">
+          {{ c.isActive ? 'ใช้งานอยู่' : 'ปิดการใช้งาน' }}
         </span>
       </div>
     </div>
