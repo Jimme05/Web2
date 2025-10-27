@@ -9,7 +9,7 @@
 
 [[redirects]]
   from = "/*"
-  to = "/app.html"
+  to = "/index.html"
   status = 200
 
 [[redirects]]

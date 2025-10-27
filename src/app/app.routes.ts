@@ -13,17 +13,38 @@ import { AdminEditProfile } from './admin-edit-profile/admin-edit-profile';
 import { UserHistory } from './user-history/user-history';
 
 export const routes: Routes = [
-    { path: '', component: Main },
-    { path: 'admin', component: Admin },
-    { path: 'home', component: Home },
-    { path: 'profile', component : Profile},
-    { path: 'edit-profile', component: EditProfile },
-    { path: 'admin/games', component: AdminGames },
-    { path: 'admin/users', component: AdminUsers },
-    { path: 'home/user-library', component: UserLibrary },
-    { path: 'home/user-cart', component: UserCart },
-    { path: 'admin/profile', component: AdminProfile },
-    { path: 'admin/edit-profile', component: AdminEditProfile },
-    { path: 'admin/user-history/:id', component: UserHistory }
+  // ✅ ให้หน้าแรก redirect ไป Home (เปลี่ยนเป็น Main ก็ได้)
+  { path: '', redirectTo: 'home', pathMatch: 'full' },
 
+  // ✅ กลุ่มหน้า Home (อย่าลืมมี <router-outlet> ใน Home)
+  {
+    path: 'home',
+    component: Home,
+    children: [
+      { path: '', component: UserLibrary },         // /home (ค่าเริ่มต้น)
+      { path: 'user-library', component: UserLibrary },
+      { path: 'user-cart', component: UserCart },
+    ],
+  },
+
+  // ✅ กลุ่มหน้า Admin (อย่าลืมมี <router-outlet> ใน Admin)
+  {
+    path: 'admin',
+    component: Admin,
+    children: [
+      { path: '', component: AdminProfile },          // /admin (ค่าเริ่มต้น)
+      { path: 'games', component: AdminGames },       // /admin/games
+      { path: 'users', component: AdminUsers },       // /admin/users
+      { path: 'profile', component: AdminProfile },   // /admin/profile
+      { path: 'edit-profile', component: AdminEditProfile },
+      { path: 'user-history/:id', component: UserHistory },
+    ],
+  },
+
+  // ✅ หน้าทั่วไปนอกกลุ่ม
+  { path: 'profile', component: Profile },
+  { path: 'edit-profile', component: EditProfile },
+
+  // ✅ กัน 404 ทั้งระบบ
+  { path: '**', redirectTo: 'home', pathMatch: 'full' },
 ];
