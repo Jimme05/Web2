@@ -1,4 +1,5 @@
 <app-admin-navbar></app-admin-navbar>
+
 <!-- 🔹 Dashboard Content -->
 <div class="container">
     <div class="dashboard-box">
@@ -8,9 +9,12 @@
         <div class="menu-row">
             <button class="menu-btn" routerLink="/admin/games" routerLinkActive="active">🎮 จัดการเกม</button>
             <button class="menu-btn" routerLink="/admin/users" routerLinkActive="active">👥 จัดการผู้ใช้</button>
-            <button class="menu-btn" routerLink="/admin/discount-codes" routerLinkActive="active">💳
-                จัดการโค้ดส่วนลด</button>
-            <button class="menu-btn" routerLink="/admin/sales-ranking" routerLinkActive="active">📈 อันดับขาย</button>
+            <button class="menu-btn" routerLink="/admin/discount-codes" routerLinkActive="active">
+                💳 จัดการโค้ดส่วนลด
+            </button>
+            <button class="menu-btn" routerLink="/admin/sales-ranking" routerLinkActive="active">
+                📈 อันดับขาย
+            </button>
         </div>
 
         <!-- 🔹 แถวสรุปข้อมูล -->
@@ -41,10 +45,10 @@
         <div class="rank-list">
             <div class="rank-item" *ngFor="let g of bestSellers">
                 <div class="rank-info">
-                    <div class="rank-icon"></div>
+                    <img [src]="g.image" alt="{{ g.name }}" class="rank-img" />
                     <div class="rank-text">
-
-                        <p>ขายได้ เกม</p>
+                        <h4>{{ g.name }}</h4>
+                        <p>ขายได้ {{ g.sold | number }} ชุด</p>
                     </div>
                 </div>
                 <button class="rank-btn">อันดับ {{ g.rank }}</button>

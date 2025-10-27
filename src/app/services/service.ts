@@ -6,6 +6,7 @@ import { inject } from '@angular/core';
   providedIn: 'root' // ✅ สำคัญมาก
 })
 export class ApiService {
+  
   private baseUrl = 'https://wepapi-59g1.onrender.com/api'
   private pho = 'http://202.28.34.203:30000';
   constructor(private http: HttpClient) { }
@@ -215,5 +216,63 @@ async hasGame(userId: number, gameId: number) {
   return res.json();
 }
 
+async getDiscountCodes() {
+  const res = await fetch(`${this.baseUrl}/DiscountCodes`);
+  return res.json();
+}
+
+async createDiscountCode(data: any) {
+  const res = await fetch(`${this.baseUrl}/DiscountCodes`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  });
+  return res.json();
+}
+
+async getBestSellers() {
+  const res = await fetch(`${this.baseUrl}/Games/best-sellers`);
+  if (!res.ok) throw new Error(await res.text());
+  return res.json();
+}
+
+async getSummary() {
+  try {
+    // ✅ โหลดเกมทั้งหมด
+    const gamesRes = await fetch(`${this.baseUrl}/Games`);
+    const games = gamesRes.ok ? await gamesRes.json() : [];
+
+    // ✅ โหลดผู้ใช้ทั้งหมด
+    const usersRes = await fetch(`${this.baseUrl}/Auth/all`); // 🔸เปลี่ยนเป็น endpoint จริงของ backend
+    const users = usersRes.ok ? await usersRes.json() : [];
+
+    // ✅ โหลดธุรกรรมทั้งหมด (สำหรับยอดขาย)
+    const txnsRes = await fetch(`${this.baseUrl}/Transactions`);
+    const txns = txnsRes.ok ? await txnsRes.json() : [];
+
+    // ✅ โหลดคูปอง
+    const couponRes = await fetch(`${this.baseUrl}/DiscountCodes`);
+    const coupons = couponRes.ok ? await couponRes.json() : [];
+
+    // ✅ รวมข้อมูลออกเป็นสรุปเดียว
+    const purchases = txns.filter((t: any) => t.type === 'purchase');
+    const totalSales = purchases.reduce((sum: number, t: any) => sum + (t.amount || 0), 0);
+
+    return {
+      totalGames: games.length,
+      totalUsers: users.length,
+      totalSales: totalSales,
+      totalCoupons: coupons.filter((c: any) => c.active).length
+    };
+  } catch (err) {
+    console.error('เกิดข้อผิดพลาดใน getSummary()', err);
+    return {
+      totalGames: 0,
+      totalUsers: 0,
+      totalSales: 0,
+      totalCoupons: 0
+    };
+  }
+}
 
 }

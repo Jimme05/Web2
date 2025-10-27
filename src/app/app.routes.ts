@@ -11,6 +11,7 @@ import { UserCart } from './user-cart/user-cart';
 import { AdminProfile } from './admin-profile/admin-profile';
 import { AdminEditProfile } from './admin-edit-profile/admin-edit-profile';
 import { UserHistory } from './user-history/user-history';
+import { AdminDiscountCodes } from './admin-discount-codes/admin-discount-codes';
 
 export const routes: Routes = [
     { path: '', component: Main },
@@ -24,6 +25,7 @@ export const routes: Routes = [
     { path: 'home/user-cart', component: UserCart },
     { path: 'admin/profile', component: AdminProfile },
     { path: 'admin/edit-profile', component: AdminEditProfile },
-    { path: 'admin/user-history/:id', component: UserHistory }
+    { path: 'admin/user-history/:id', component: UserHistory },
+    { path: 'admin/discount-codes', component: AdminDiscountCodes }
 
 ];

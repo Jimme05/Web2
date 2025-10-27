@@ -393,6 +393,7 @@ body {
   }
 }
 
+/* ✅ ส่วนฟอร์มทั่วไป */
 .form-group {
   margin-bottom: 1.3rem;
 
@@ -441,6 +442,34 @@ body {
     }
   }
 }
+
+/* ✅ กล่องแสดงตัวอย่างรูป (Preview Image) */
+.preview-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid rgba(106, 99, 210, 0.3); /* ขอบม่วงอ่อน */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  margin-inline: auto; /* จัดให้อยู่ตรงกลาง */
+
+  img.preview {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* ✅ ครอบพอดี ไม่ยืดผิดสัดส่วน */
+    border-radius: 50%;
+    transition: transform 0.3s ease;
+  }
+
+  img.preview:hover {
+    transform: scale(1.05);
+  }
+}
+
 
 .form-row {
   display: grid;

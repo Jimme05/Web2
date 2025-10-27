@@ -146,73 +146,60 @@ body, html {
 }
 
 .rank-list {
+  margin-top: 20px;
   display: flex;
   flex-direction: column;
   gap: 10px;
-}
 
-.rank-item {
-  background: #fdfdfd;
-  border-radius: 12px;
-  padding: 12px 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-}
-
-.rank-info {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.rank-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 8px;
-  background: linear-gradient(135deg, #6a63d2, #8a78e2);
-}
-
-.rank-text h4 {
-  margin: 0;
-  font-size: 1rem;
-  color: #222;
-}
-
-.rank-text p {
-  margin: 0;
-  font-size: 0.85rem;
-  color: #666;
-}
-
-.rank-btn {
-  background: #f59e0b;
-  color: white;
-  border: none;
-  border-radius: 20px;
-  padding: 6px 14px;
-  font-size: 0.85rem;
-  cursor: pointer;
-  transition: 0.2s;
-}
-
-.rank-btn:hover {
-  transform: scale(1.05);
-}
-
-/* 🔹 Responsive */
-@media (max-width: 768px) {
-  .menu-row {
-    flex-direction: column;
-  }
-
-  .summary-row {
-    flex-direction: column;
+  .rank-item {
+    display: flex;
+    justify-content: space-between;
     align-items: center;
-  }
+    background: #fff;
+    border-radius: 12px;
+    padding: 10px 16px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s;
 
-  .dashboard-box {
-    width: 95%;
+    &:hover {
+      transform: translateY(-3px);
+    }
+
+    .rank-info {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+
+      .rank-img {
+        width: 60px;
+        height: 60px;
+        border-radius: 10px;
+        object-fit: cover;
+      }
+
+      .rank-text {
+        h4 {
+          margin: 0;
+          font-size: 1rem;
+          font-weight: 600;
+        }
+        p {
+          margin: 0;
+          color: #666;
+          font-size: 0.9rem;
+        }
+      }
+    }
+
+    .rank-btn {
+      background: linear-gradient(135deg, #6a63d2, #8179e9);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 6px 12px;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
   }
 }
+

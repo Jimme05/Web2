@@ -1,0 +1,67 @@
+<app-admin-navbar></app-admin-navbar>
+
+<div class="container">
+  <div class="dashboard-box">
+    <h2 class="dashboard-title">💳 สร้างคูปองส่วนลด</h2>
+
+    <form class="coupon-form" (ngSubmit)="createCoupon()">
+      <div class="form-group">
+        <label>🪪 ชื่อคูปอง</label>
+        <input
+          type="text"
+          placeholder="เช่น GAME2025"
+          [(ngModel)]="couponName"
+          name="couponName"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label>🎯 จำนวนครั้งที่ใช้ได้</label>
+        <input
+          type="number"
+          min="1"
+          placeholder="เช่น 10"
+          [(ngModel)]="usageLimit"
+          name="usageLimit"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label>💰 ส่วนลด (%)</label>
+        <input
+          type="number"
+          min="1"
+          max="100"
+          placeholder="เช่น 15"
+          [(ngModel)]="discountPercent"
+          name="discountPercent"
+          required
+        />
+      </div>
+
+      <button class="btn-create" type="submit" [disabled]="loading">
+        {{ loading ? 'กำลังบันทึก...' : 'สร้างคูปอง' }}
+      </button>
+    </form>
+
+    <h3 class="sub-title">🎟️ รายการคูปองส่วนลด</h3>
+
+    <div class="coupon-list" *ngIf="coupons.length > 0; else emptyCoupon">
+      <div class="coupon-item" *ngFor="let c of coupons">
+        <div>
+          <h4>{{ c.code }}</h4>
+          <p>ส่วนลด: {{ c.discount }}% | ใช้ได้อีก {{ c.usageLimit }} ครั้ง</p>
+        </div>
+        <span class="status" [class.active]="c.active">
+          {{ c.active ? 'ใช้งานอยู่' : 'หมดอายุ' }}
+        </span>
+      </div>
+    </div>
+
+    <ng-template #emptyCoupon>
+      <p class="empty-text">ยังไม่มีคูปองในระบบ 😅</p>
+    </ng-template>
+  </div>
+</div>
