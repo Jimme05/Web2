@@ -29,7 +29,7 @@ interface Transaction {
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, UserNavbar],
+  imports: [CommonModule, FormsModule, UserNavbar],
   templateUrl: './profile.html',
   styleUrls: ['./profile.scss']
 })
