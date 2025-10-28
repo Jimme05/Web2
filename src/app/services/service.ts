@@ -139,7 +139,7 @@ export class ApiService {
   }
  imageUrl(file?: string | null): string {
   if (!file) return 'assets/default.png';
-  return `https://web2-9xjy.onrender.com/api/Images/proxy/upload/${encodeURIComponent(file)}`;
+  return `https://wepapi-59g1.onrender.com/api/Images/proxy/upload/${encodeURIComponent(file)}`;
   // หรือถ้าทำ action แบบ ?path=
   // return `https://<your-render-api>.onrender.com/api/Images/proxy?path=/upload/${encodeURIComponent(file)}`;
 }
